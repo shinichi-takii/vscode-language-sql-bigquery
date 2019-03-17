@@ -23,13 +23,13 @@
     "syntax",
     "snippets"
   ],
-  "homepage": "https://github.com/shinichi-takii/vs-language-sql-bigquery/blob/master/README.md",
+  "homepage": "https://github.com/shinichi-takii/vscode-language-sql-bigquery/blob/master/README.md",
   "repository": {
     "type": "git",
-    "url": "https://github.com/shinichi-takii/vs-language-sql-bigquery.git"
+    "url": "https://github.com/shinichi-takii/vscode-language-sql-bigquery.git"
   },
   "bugs": {
-    "url": "https://github.com/shinichi-takii/vs-language-sql-bigquery/issues"
+    "url": "https://github.com/shinichi-takii/vscode-language-sql-bigquery/issues"
   },
   "icon": "images/BigQuery.png",
   "contributes": {

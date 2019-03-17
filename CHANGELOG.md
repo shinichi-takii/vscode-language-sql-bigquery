@@ -9,4 +9,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release
 
-[1.1.0]: https://github.com/shinichi-takii/vs-language-sql-bigquery/releases/tag/v1.1.0
+[1.1.0]: https://github.com/shinichi-takii/vscode-language-sql-bigquery/releases/tag/v1.1.0
