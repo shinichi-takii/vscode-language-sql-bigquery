@@ -1,0 +1,68 @@
+{
+  "name": "sql-bigquery",
+  "displayName": "SQL (BigQuery)",
+  "description": "BigQuery SQL language support in Visual Studio Code",
+  "version": "1.1.0",
+  "publisher": "shinichi-takii",
+  "author": {
+    "name": "Shinichi Takii"
+  },
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.31.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets"
+  ],
+  "keywords": [
+    "language",
+    "sql",
+    "bigquery",
+    "grammar",
+    "syntax",
+    "snippets"
+  ],
+  "homepage": "https://github.com/shinichi-takii/vs-language-sql-bigquery/blob/master/README.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shinichi-takii/vs-language-sql-bigquery.git"
+  },
+  "bugs": {
+    "url": "https://github.com/shinichi-takii/vs-language-sql-bigquery/issues"
+  },
+  "icon": "images/BigQuery.png",
+  "contributes": {
+    "languages": [
+      {
+        "id": "sql-bigquery",
+        "aliases": [
+          "SQL (BigQuery)",
+          "sql-bigquery"
+        ],
+        "extensions": [
+          ".sql",
+          ".ddl",
+          ".dml",
+          ".bqsql",
+          ".bqddl",
+          ".bqdml"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "sql-bigquery",
+        "scopeName": "source.sql-bigquery",
+        "path": "./syntaxes/sql-bigquery.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "sql-bigquery",
+        "path": "./snippets/sql-bigquery.snippets.json"
+      }
+    ]
+  }
+}
