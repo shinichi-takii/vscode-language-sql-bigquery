@@ -597,6 +597,14 @@
           "name": "support.function.gis.sql"
         },
         {
+          "match": "(?i)\\b(KEYS\\.(NEW_KEYSET|ADD_KEY_FROM_RAW_BYTES|KEYSET_FROM_JSON|KEYSET_TO_JSON|ROTATE_KEYSET))\\b",
+          "name": "support.function.keys.sql"
+        },
+        {
+          "match": "(?i)\\b(AEAD\\.(DECRYPT_BYTES|DECRYPT_STRING|ENCRYPT))\\b",
+          "name": "support.function.aead.sql"
+        },
+        {
           "match": "(?i)\\b(EXACT_COUNT_DISTINCT|FIRST|GROUP_CONCAT(_UNQUOTED)?|LAST|NEST|NTH|QUANTILES|TOP|UNIQUE)(?=\\s*\\()",
           "name": "invalid.deprecated.legacy.aggregate.sql"
         },
