@@ -103,7 +103,7 @@
       ]
     },
     "INSERT INTO SELECT": {
-      "prefix": "insertselect",
+      "prefix": "insert select",
       "body": [
         "INSERT INTO `${1:project}.${2:dataset}.${3:table}`",
         "\t(${4:column, ...})",
@@ -146,11 +146,13 @@
         "WHEN MATCHED THEN",
         "\tUPDATE SET ${8:target_column} = ${9:value}",
         "WHEN NOT MATCHED THEN",
-        "\tINSERT (${10:target_column, ...}) VALUES(${11:source_column, ...})"
+        "\tINSERT (${10:target_column, ...}) VALUES(${11:source_column, ...})",
+        "WHEN MATCHED AND ${12:other_condition} THEN",
+        "\tDELETE"
       ]
     },
     "CREATE TABLE": {
-      "prefix": "createtable",
+      "prefix": "create table",
       "body": [
         "CREATE TABLE `${1:project}.${2:dataset}.${3:table}`",
         "(",
@@ -159,7 +161,7 @@
       ]
     },
     "CREATE TABLE IF NOT EXISTS": {
-      "prefix": "createtableifnotexists",
+      "prefix": "create table if not exists",
       "body": [
         "CREATE TABLE IF NOT EXISTS `${1:project}.${2:dataset}.${3:table}`",
         "(",
@@ -168,7 +170,7 @@
       ]
     },
     "CREATE OR REPLACE TABLE": {
-      "prefix": "createorreplacetable",
+      "prefix": "create or replace table",
       "body": [
         "CREATE OR REPLACE TABLE `${1:project}.${2:dataset}.${3:table}`",
         "(",
@@ -1817,6 +1819,38 @@
     "ST_UNION_AGG()": {
       "prefix": "stunionagg",
       "body": "ST_UNION_AGG(${1:geography})"
+    },
+    "KEYS.NEW_KEYSET": {
+      "prefix": "keysnew_keyset",
+      "body": "KEYS.NEW_KEYSET(${1:key_type})"
+    },
+    "KEYS.ADD_KEY_FROM_RAW_BYTES": {
+      "prefix": "keysadd_key_from_raw_bytes",
+      "body": "KEYS.ADD_KEY_FROM_RAW_BYTES(${1:keyset}, ${2:key_type}, ${3:raw_key_bytes})"
+    },
+    "AEAD.DECRYPT_BYTES": {
+      "prefix": "aeaddecrypt_bytes",
+      "body": "AEAD.DECRYPT_BYTES(${1:keyset}, ${2:ciphertext}, ${3:additional_data})"
+    },
+    "AEAD.DECRYPT_STRING": {
+      "prefix": "aeaddecrypt_string",
+      "body": "AEAD.DECRYPT_STRING(${1:keyset}, ${2:ciphertext}, ${3:additional_data})"
+    },
+    "AEAD.ENCRYPT": {
+      "prefix": "aeadencrypt",
+      "body": "AEAD.ENCRYPT(${1:keyset}, ${2:plaintext}, ${3:additional_data})"
+    },
+    "KEYS.KEYSET_FROM_JSON": {
+      "prefix": "keyskeyset_from_json",
+      "body": "KEYS.KEYSET_FROM_JSON(${1:json_keyset})"
+    },
+    "KEYS.KEYSET_TO_JSON": {
+      "prefix": "keyskeyset_to_json",
+      "body": "KEYS.KEYSET_TO_JSON(${1:keyset})"
+    },
+    "KEYS.ROTATE_KEYSET": {
+      "prefix": "keysrotate_keyset",
+      "body": "KEYS.ROTATE_KEYSET(${1:keyset}, ${2:key_type})"
     },
     "INFORMATION_SCHEMA.SCHEMATA": {
       "prefix": "informationschemata",
