@@ -156,7 +156,7 @@
       "body": [
         "CREATE TABLE `${1:project}.${2:dataset}.${3:table}`",
         "(",
-        "\t${4:column} ${5:type}",
+        "\t${4:column} ${5:type}${6: OPTIONS (description = \"comment\")}",
         ")"
       ]
     },
@@ -165,7 +165,7 @@
       "body": [
         "CREATE TABLE IF NOT EXISTS `${1:project}.${2:dataset}.${3:table}`",
         "(",
-        "\t${4:column} ${5:type}",
+        "\t${4:column} ${5:type}${6: OPTIONS (description = \"comment\")}",
         ")"
       ]
     },
@@ -174,7 +174,7 @@
       "body": [
         "CREATE OR REPLACE TABLE `${1:project}.${2:dataset}.${3:table}`",
         "(",
-        "\t${4:column} ${5:type}",
+        "\t${4:column} ${5:type}${6: OPTIONS (description = \"comment\")}",
         ")"
       ]
     },
@@ -183,10 +183,10 @@
       "body": [
         "CREATE TABLE `${1:project}.${2:dataset}.${3:table}`",
         "(",
-        "\t${4:column} ${5:type}",
+        "\t${4:column} ${5:type}${6: OPTIONS (description = \"comment\")}",
         ")",
-        "PARTITION BY ${6:DATE(_PARTITIONTIME)|DATE(<timestamp_column>)|<date_column>}",
-        "${7:[CLUSTER BY clustering_column_list]}"
+        "PARTITION BY ${7:DATE(_PARTITIONTIME)|DATE(<timestamp_column>)|<date_column>}",
+        "${8:[CLUSTER BY clustering_column_list]}"
       ]
     },
     "CREATE TABLE AS SELECT": {
@@ -194,12 +194,12 @@
       "body": [
         "CREATE TABLE `${1:project}.${2:dataset}.${3:table}`",
         "(",
-        "\t${4:column} ${5:type}",
+        "\t${4:column} ${5:type}${6: OPTIONS (description = \"comment\")}",
         ") AS",
         "SELECT",
-        "\t${6:column}",
-        "FROM `${7:project}.${8:dataset}.${9:table}`",
-        "WHERE ${10:condition}"
+        "\t${7:column}",
+        "FROM `${8:project}.${9:dataset}.${10:table}`",
+        "WHERE ${11:condition}"
       ]
     },
     "CREATE TABLE OPTIONS": {
@@ -301,6 +301,10 @@
     "DROP VIEW IF EXISTS": {
       "prefix": "drop view if exists",
       "body": "DROP VIEW IF EXISTS `${1:project}.${2:dataset}.${3:view}`"
+    },
+    "DROP MODEL": {
+      "prefix": "drop model",
+      "body": "${1:DROP MODEL | DROP MODEL IF EXISTS} `${2:project}.${3:dataset}.${4:model}`"
     },
     "ALTER TABLE SET OPTIONS": {
       "prefix": "alter table",
