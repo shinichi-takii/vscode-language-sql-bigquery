@@ -19,6 +19,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
           ```
   - Document
     - https://cloud.google.com/bigquery/docs/reference/standard-sql/mathematical_functions#range_bucket
+- Add supports temporary tables
+  - Supports syntax highlighting
+  - Add snippets
+    - `CREATE TEMPORARY TABLE`
+        - Prefix  
+          `create temp table`
+        - body
+          ```sql
+          CREATE OR REPLACE TEMP TABLE table_name
+          (
+            column type OPTIONS (description = "comment")
+          )
+          ```
+  - Document
+    - https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#temporary_tables
 - Add supports Persistent UDF
   - Supports syntax highlighting
   - Add snippets
