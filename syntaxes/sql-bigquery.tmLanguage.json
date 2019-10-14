@@ -38,23 +38,8 @@
           "name": "invalid.illegal.table.delimiter.sql"
         }
       },
-      "match": "(?i:^\\s*(create(?:\\s+or\\s+replace)?|drop|alter)\\s+(table|view|model)\\b(?:\\s+(if(?:\\s+not)?\\s+exists)\\b)?)(?:\\s+(`?)((?:[\\w\\-\\{\\}]+(?:\\.|(\\:)))?(?:[\\w\\{\\}]+\\.)?[\\w\\{\\}\\*]+)\\4)?",
+      "match": "(?i:^\\s*(create(?:\\s+or\\s+replace)?(?:\\s+temporary|\\s+temp)?|drop|alter)\\s+(table|view|model|function|procedure)\\b(?:\\s+(if(?:\\s+not)?\\s+exists)\\b)?)(?:\\s+(`?)((?:[\\w\\-\\{\\}]+(?:\\.|(\\:)))?(?:[\\w\\{\\}]+\\.)?[\\w\\{\\}\\*]+)\\4)?",
       "name": "meta.create.sql"
-    },
-    {
-      "captures": {
-        "1": {
-          "name": "keyword.other.create.sql"
-        },
-        "3": {
-          "name": "keyword.other.sql"
-        },
-        "5": {
-          "name": "entity.name.function.sql"
-        }
-      },
-      "match": "(?i:^\\s*(create(?:\\s+(temporary|temp))?)\\s+(function)\\b)(?:\\s+(`?)(\\w+)\\4)?",
-      "name": "meta.create.function.sql"
     },
     {
       "captures": {
@@ -116,8 +101,8 @@
           "name": "variable.parameter.table.partition_decorator.sql"
         }
       },
-      "match": "(?i:\\b(model)\\s+(?:(`?)((?:[\\w\\-\\{\\}]+(?:\\.|(\\:)))?(?:[\\w\\{\\}]+\\.)?[\\w\\{\\}]+)(\\*|\\$\\w+)?\\2)?)",
-      "name": "meta.other.table.ml.sql"
+      "match": "(?i:\\b(model|call)\\s+(?:(`?)((?:[\\w\\-\\{\\}]+(?:\\.|(\\:)))?(?:[\\w\\{\\}]+\\.)?[\\w\\{\\}]+)(\\*|\\$\\w+)?\\2)?)",
+      "name": "meta.other.table.ml_procedure.sql"
     },
     {
       "captures": {
@@ -227,6 +212,10 @@
     {
       "match": "(?i:\\b(over|ignore|respect|nulls|interval|at|zone|at\\s+time\\s+zone)\\b)",
       "name": "keyword.other.function.sql"
+    },
+    {
+      "match": "(?i:\\b(procedure|begin|out|inout|call|declare|if|end\\s+if|loop|while|do|break|leave|continue|iterate|return)\\b)",
+      "name": "keyword.other.procedure.sql"
     },
     {
       "captures": {
@@ -549,7 +538,7 @@
           "name": "support.function.net.sql"
         },
         {
-          "match": "(?i)\\b(ABS|SIGN|IS_(INF|NAN)|IEEE_DIVIDE|RAND|SQRT|POW|POWER|EXP|LN|LOG|LOG10|GREATEST|LEAST|DIV|SAFE_DIVIDE|MOD|ROUND|TRUNC|CEIL|CEILING|FLOOR|COS|COSH|ACOS|ACOSH|SIN|SINH|ASIN|ASINH|TAN|TANH|ATAN|ATANH|ATAN2)\\b",
+          "match": "(?i)\\b(ABS|SIGN|IS_(INF|NAN)|IEEE_DIVIDE|RAND|SQRT|POW|POWER|EXP|LN|LOG|LOG10|GREATEST|LEAST|DIV|SAFE_DIVIDE|MOD|ROUND|TRUNC|CEIL|CEILING|FLOOR|COS|COSH|ACOS|ACOSH|SIN|SINH|ASIN|ASINH|TAN|TANH|ATAN|ATANH|ATAN2|RANGE_BUCKET)\\b",
           "name": "support.function.math.sql"
         },
         {
@@ -577,7 +566,7 @@
           "name": "support.function.window.sql"
         },
         {
-          "match": "(?i)\\b(COALESCE|IF|NULLIF|IFNULL)\\b",
+          "match": "(?i)\\b(COALESCE|IF[^\\s]|NULLIF|IFNULL)\\b",
           "name": "support.function.conditional.sql"
         },
         {

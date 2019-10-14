@@ -43,7 +43,7 @@
     },
     "BETWEEN ... AND": {
       "prefix": "between",
-      "body": "${1} BETWEEN ${2} AND ${3}"
+      "body": "BETWEEN ${1} AND ${2}"
     },
     "IN (value, ...)": {
       "prefix": "in",
@@ -151,6 +151,15 @@
         "\tDELETE"
       ]
     },
+    "CREATE TEMPORARY TABLE": {
+      "prefix": "create temp table",
+      "body": [
+        "CREATE OR REPLACE TEMP TABLE ${1:table_name}",
+        "(",
+        "\t${2:column} ${3:type}${4: OPTIONS (description = \"comment\")}",
+        ")"
+      ]
+  },
     "CREATE TABLE": {
       "prefix": "create table",
       "body": [
@@ -257,23 +266,63 @@
         "FROM `${5:project}.${5:dataset}.${6:table}`"
       ]
     },
-    "CREATE JavaScript FUNCTION": {
-      "prefix": "create function javascript",
+    "CREATE TEMPORARY JavaScript FUNCTION": {
+      "prefix": "create temp function javascript",
       "body": [
-        "CREATE TEMPORARY FUNCTION ${1:functionName}(${2:param_name param_type[, ...]})",
+        "CREATE OR REPLACE TEMP FUNCTION ${1:functionName}(${2:param_name param_type[, ...]})",
         "RETURNS ${3:data_type}",
         "LANGUAGE js AS \"\"\"",
         "\t${4:return \"expression\";}",
         "\"\"\";"
       ]
     },
-    "CREATE SQL FUNCTION": {
-      "prefix": "create function sql",
+    "CREATE TEMPORARY SQL FUNCTION": {
+      "prefix": "create temp function sql",
       "body": [
-        "CREATE TEMPORARY FUNCTION ${1:functionName}(${2:param_name param_type[, ...]})",
+        "CREATE OR REPLACE TEMP FUNCTION ${1:functionName}(${2:param_name param_type[, ...]})",
         "${3:[RETURNS data_type]}",
         "AS (",
         "\t${4:sql_expression}",
+        ");"
+      ]
+    },
+    "CREATE JavaScript FUNCTION": {
+      "prefix": "create function javascript",
+      "body": [
+        "CREATE OR REPLACE FUNCTION `${1:project}.${2:dataset}.${3:functionName}`(${4:param_name param_type[, ...]})",
+        "RETURNS ${5:data_type}",
+        "LANGUAGE js AS \"\"\"",
+        "\t${6:return \"expression\";}",
+        "\"\"\";"
+      ]
+    },
+    "CREATE SQL FUNCTION": {
+      "prefix": "create function sql",
+      "body": [
+        "CREATE OR REPLACE FUNCTION `${1:project}.${2:dataset}.${3:functionName}`(${4:param_name param_type[, ...]})",
+        "${5:[RETURNS data_type]}",
+        "AS (",
+        "\t${6:sql_expression}",
+        ");"
+      ]
+    },
+    "CREATE JavaScript FUNCTION IF NOT EXISTS": {
+      "prefix": "create function javascript if not exists",
+      "body": [
+        "CREATE FUNCTION IF NOT EXISTS `${1:project}.${2:dataset}.${3:functionName}`(${4:param_name param_type[, ...]})",
+        "RETURNS ${5:data_type}",
+        "LANGUAGE js AS \"\"\"",
+        "\t${6:return \"expression\";}",
+        "\"\"\";"
+      ]
+    },
+    "CREATE SQL FUNCTION IF NOT EXISTS": {
+      "prefix": "create function sql if not exists",
+      "body": [
+        "CREATE FUNCTION IF NOT EXISTS `${1:project}.${2:dataset}.${3:functionName}`(${4:param_name param_type[, ...]})",
+        "${5:[RETURNS data_type]}",
+        "AS (",
+        "\t${6:sql_expression}",
         ");"
       ]
     },
@@ -359,6 +408,127 @@
         "\tlabels = [(\"key\", \"value\")]",
         ")"
       ]
+    },
+    "CREATE PROCEDURE": {
+      "prefix": "create procedure",
+      "body": [
+        "CREATE OR REPLACE PROCEDURE `${1:project}.${2:dataset}.${3:ProcedureName}`(${4:[IN|OUT|INOUT] arg_name arg_type[, ...]})",
+        "BEGIN",
+        "\t${5:statements}",
+        "END;"
+      ]
+    },
+    "CALL PROCEDURE": {
+      "prefix": "call procedure",
+      "body": [
+        "CALL `${1:project}.${2:dataset}.${3:ProcedureName}`(${4:arg[, ...]});"
+      ]
+    },
+    "DECLARE": {
+      "prefix": "declare",
+      "body": [
+        "DECLARE ${1:variable_name[, ...] variable_type [DEFAULT expression]};"
+      ]
+    },
+    "SET": {
+      "prefix": "set",
+      "body": [
+        "SET ${1:variable_name} = ${2:expression};"
+      ]
+    },
+    "SET multiple": {
+      "prefix": "set multiple",
+      "body": [
+        "SET (${1:variable_name_1, ...}) = (${2:expression_1, ...});"
+      ]
+    },
+    "SET from query": {
+      "prefix": "set query",
+      "body": [
+        "SET ${1:variable_name} = (${2:SELECT query});"
+      ]
+    },
+    "BEGIN ... END": {
+      "prefix": "begin/end",
+      "body": [
+        "BEGIN",
+        "\t${1:statements}",
+        "END;"
+      ]
+    },
+    "IF ... THEN": {
+      "prefix": "if",
+      "body": [
+        "IF ${1:condition} THEN",
+        "\t${2:statements}",
+        "END IF;"
+      ]
+    },
+    "IF ... THEN ELSE": {
+      "prefix": "if/else",
+      "body": [
+        "IF ${1:condition} THEN",
+        "\t${2:statements}",
+        "ELSE",
+        "\t${3:statements}",
+        "END IF;"
+      ]
+    },
+    "ELSE": {
+      "prefix": "else",
+      "body": [
+        "ELSE",
+        "\t${1:statements}"
+      ]
+    },
+    "IF EXISTS query THEN": {
+      "prefix": "if exists query",
+      "body": [
+        "IF EXISTS (${1:SELECT expression FROM `project.dataset.table` WHERE condition}) THEN",
+        "\t${2:statements}",
+        "END IF;"
+      ]
+    },
+    "LOOP": {
+      "prefix": "loop",
+      "body": [
+        "LOOP",
+        "\t${1:statements}",
+        "END LOOP;"
+      ]
+    },
+    "WHILE": {
+      "prefix": "while",
+      "body": [
+        "WHILE ${1:expression} DO",
+        "\t${2:statements}",
+        "END WHILE;"
+      ]
+    },
+    "BREAK": {
+      "prefix": "break",
+      "body": "BREAK;",
+      "description": "Exit the current loop."
+    },
+    "LEAVE": {
+      "prefix": "leave",
+      "body": "LEAVE;",
+      "description": "Synonym for BREAK."
+    },
+    "CONTINUE": {
+      "prefix": "continue",
+      "body": "CONTINUE;",
+      "description": "Skip statements and return to the start of the loop."
+    },
+    "ITERATE": {
+      "prefix": "iterate",
+      "body": "ITERATE;",
+      "description": "Synonym for CONTINUE."
+    },
+    "RETURN": {
+      "prefix": "return",
+      "body": "RETURN;",
+      "description": "RETURN terminates execution of the current script."
     },
     "CAST()": {
       "prefix": "cast",
@@ -817,6 +987,11 @@
       "prefix": "atan2",
       "body": "ATAN2(${1:X}, ${2:Y})",
       "description": "Calculates the principal value of the arc tangent of Y/X using the signs of the two arguments to determine the quadrant."
+    },
+    "RANGE_BUCKET()": {
+      "prefix": "range_bucket",
+      "body": "RANGE_BUCKET(${1:point}, ${2:boundaries_array})",
+      "description": "Scans through a sorted array and returns the 0-based position of the point's upper bound."
     },
     "FARM_FINGERPRINT()": {
       "prefix": "farm_fingerprint",
