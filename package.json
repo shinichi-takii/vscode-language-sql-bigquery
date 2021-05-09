@@ -2,7 +2,7 @@
   "name": "sql-bigquery",
   "displayName": "SQL (BigQuery)",
   "description": "BigQuery SQL language support in Visual Studio Code",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "publisher": "shinichi-takii",
   "author": {
     "name": "Shinichi Takii"
