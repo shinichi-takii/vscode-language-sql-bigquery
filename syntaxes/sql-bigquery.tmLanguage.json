@@ -38,7 +38,7 @@
           "name": "invalid.illegal.table.delimiter.sql"
         }
       },
-      "match": "(?i:^\\s*(create(?:\\s+or\\s+replace)?(?:\\s+temporary|\\s+temp)?|drop|alter)\\s+(table|view|model|function|procedure)\\b(?:\\s+(if(?:\\s+not)?\\s+exists)\\b)?)(?:\\s+(`?)((?:[\\w\\-\\{\\}]+(?:\\.|(\\:)))?(?:[\\w\\{\\}]+\\.)?[\\w\\{\\}\\*]+)\\4)?",
+      "match": "(?i:^\\s*(create(?:\\s+or\\s+replace)?(?:\\s+temporary|\\s+temp)?|drop|alter)\\s+(schema|table|view|materialized\\s+view|external\\s+table|model|function|procedure)\\b(?:\\s+(if(?:\\s+not)?\\s+exists)\\b)?)(?:\\s+(`?)((?:(?:[\\w\\-]*(?:\\{+\\s*[\\w\\-]+\\s*\\}+[\\w\\-]*)?)(?:\\.|(\\:)))?(?:(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?)\\.)?(?:[\\w\\{\\}]+|\\{\\{\\s*[\\w]+\\s*\\}\\}))\\4)?",
       "name": "meta.create.sql"
     },
     {
@@ -56,7 +56,7 @@
           "name": "variable.parameter.table.partition_decorator.sql"
         }
       },
-      "match": "(?i:^\\b((?:insert|merge)(?:\\s+into)?)(?:\\s+(`?)((?:[\\w\\-\\{\\}]+(?:\\.|(\\:)))?(?:[\\w\\{\\}]+\\.)?[\\w\\{\\}]+)(\\*|\\$\\w+)?\\2)?)",
+      "match": "(?i:^\\b((?:insert|merge)(?:\\s+into)?)(?:\\s+(`?)((?:(?:[\\w\\-]*(?:\\{+\\s*[\\w\\-]+\\s*\\}+[\\w\\-]*)?)(?:\\.|(\\:)))?(?:(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?)\\.)?(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?))(\\*|\\$\\w+)?\\2)?)",
       "name": "meta.create.DML.insert.sql"
     },
     {
@@ -74,16 +74,16 @@
           "name": "variable.parameter.table.partition_decorator.sql"
         },
         "7": {
-          "name": "entity.name.function.table.partition_decorator.legacy.sql"
+          "name": "entity.name.function.table.legacy.sql"
         },
         "8": {
           "name": "invalid.illegal.table.delimiter.sql"
         },
         "9": {
-          "name": "variable.parameter.table.legacy.sql"
+          "name": "variable.parameter.table.partition_decorator.legacy.sql"
         }
       },
-      "match": "(?i)(from|join|delete\\s+from|delete(?!\\s+from)|update|using)\\s+((`?)((?:[\\w\\-\\{\\}]+(?:\\.|(\\:)))?(?:[\\w\\{\\}]+\\.)?(?:INFORMATION_SCHEMA\\.\\w+|[\\w\\{\\}]+))(\\*|\\$\\w+)?\\3?|\\[((?:[\\w\\-\\{\\}]+(?:\\:|(\\.)))?(?:[\\w\\{\\}]+\\.)?[\\w\\{\\}]+)(\\*|\\$\\w+)?\\])",
+      "match": "(?i)(from|join|delete\\s+from|delete(?!\\s+from)|update|using)\\s+((`?)((?:(?:[\\w\\-]*(?:\\{+\\s*[\\w\\-]+\\s*\\}+[\\w\\-]*)?)(?:\\.|(\\:)))?(?:(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?)\\.)?(?:INFORMATION_SCHEMA\\.\\w+|\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?))(\\*|\\$\\w+)?\\3?|\\[((?:(?:[\\w\\-]*(?:\\{+\\s*[\\w\\-]+\\s*\\}+[\\w\\-]*)?)(?:\\:|(\\.)))?(?:(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?)\\.)?(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?))(\\*|\\$\\w+)?\\])",
       "name": "meta.create.from.sql"
     },
     {
@@ -101,7 +101,7 @@
           "name": "variable.parameter.table.partition_decorator.sql"
         }
       },
-      "match": "(?i:\\b(model|call)\\s+(?:(`?)((?:[\\w\\-\\{\\}]+(?:\\.|(\\:)))?(?:[\\w\\{\\}]+\\.)?[\\w\\{\\}]+)(\\*|\\$\\w+)?\\2)?)",
+      "match": "(?i:\\b(model|call)\\s+(?:(`?)((?:(?:[\\w\\-]*(?:\\{+\\s*[\\w\\-]+\\s*\\}+[\\w\\-]*)?)(?:\\.|(\\:)))?(?:(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?)\\.)?(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?))(\\*|\\$\\w+)?\\2)?)",
       "name": "meta.other.table.ml_procedure.sql"
     },
     {
@@ -116,16 +116,16 @@
           "name": "variable.parameter.table.partition_decorator.sql"
         },
         "5": {
-          "name": "entity.name.function.table.partition_decorator.legacy.sql"
+          "name": "entity.name.function.table.legacy.sql"
         },
         "6": {
           "name": "invalid.illegal.table.delimiter.sql"
         },
         "7": {
-          "name": "variable.parameter.table.legacy.sql"
+          "name": "variable.parameter.table.partition_decorator.legacy.sql"
         }
       },
-      "match": "^\\s*(?:(`)((?:[\\w\\-\\{\\}]+(?:\\.|(\\:)))?(?:[\\w\\{\\}]+\\.)?(?:INFORMATION_SCHEMA\\.\\w+|[\\w\\{\\}]+))(\\*|\\$\\w+)?\\1|\\[((?:[\\w\\-\\{\\}]+(?:\\:|(\\.)))?(?:[\\w\\{\\}]+\\.)?[\\w\\{\\}]+)(\\*|\\$\\w+)?\\])",
+      "match": "^\\s*(?:(`)((?:(?:[\\w\\-]*(?:\\{+\\s*[\\w\\-]+\\s*\\}+[\\w\\-]*)?)(?:\\.|(\\:)))?(?:(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?)\\.)?(?:INFORMATION_SCHEMA\\.\\w+|(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?)))(\\*|\\$\\w+)?\\1|\\[((?:(?:[\\w\\-]*(?:\\{+\\s*[\\w\\-]+\\s*\\}+[\\w\\-]*)?)(?:\\:|(\\.)))?(?:(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?)\\.)?(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?))(\\*|\\$\\w+)?\\])",
       "name": "meta.other.table.sql"
     },
     {
@@ -202,7 +202,7 @@
       "name": "keyword.other.DML.sql"
     },
     {
-      "match": "(?i:\\b(create(\\s+(temporary|temp))?|drop|table|view|model|if|not|exists|partition|cluster|options|rows|range|unbounded|preceding|following|current|row|returns|language)\\b)",
+      "match": "(?i:\\b(create(\\s+(temporary|temp))?|drop(\\s+column)?|schema|table|view|materialized(\\s+view)?|external\\s+table|if|not|exists|partition|cluster|options|rows|range|unbounded|preceding|following|current|row|returns|language|deterministic|(\\s*or\\s+replace\\s+)?(function|procedure|model)(\\s*if\\s+not\\s+exists\\s+)?|(add|drop)\\s+column|cascade|restrict)\\b)",
       "name": "keyword.other.DDL.sql"
     },
     {
@@ -331,13 +331,37 @@
     "regexps": {
       "patterns": [
         {
-          "begin": "r['\"]",
+          "begin": "r[\"]",
           "beginCaptures": {
             "0": {
               "name": "storage.type.string.regex.begin.sql"
             }
           },
-          "end": "['\"]",
+          "end": "[\"]",
+          "endCaptures": {
+            "0": {
+              "name": "storage.type.string.regex.end.sql"
+            }
+          },
+          "name": "meta.regex.sql",
+          "contentName": "string.regexp.sql",
+          "patterns": [
+            {
+              "include": "#string_interpolation"
+            },
+            {
+              "include": "#string_escape"
+            }
+          ]
+        },
+        {
+          "begin": "r[']",
+          "beginCaptures": {
+            "0": {
+              "name": "storage.type.string.regex.begin.sql"
+            }
+          },
+          "end": "[']",
           "endCaptures": {
             "0": {
               "name": "storage.type.string.regex.end.sql"
@@ -359,15 +383,12 @@
     "javascript": {
       "patterns": [
         {
-          "begin": "(?i:\\b(language)\\s+(js)\\s+(as)\\s+)(\"\"\")",
+          "begin": "(?i:\\b(as)\\s+)r{0,1}(\"\"\")",
           "beginCaptures": {
             "1": {
               "name": "keyword.other.alias.sql"
             },
-            "3": {
-              "name": "keyword.other.alias.sql"
-            },
-            "4": {
+            "2": {
               "name": "string.quoted.double.begin.sql"
             }
           },
@@ -550,7 +571,7 @@
           "name": "support.function.aggregate.sql.array"
         },
         {
-          "match": "(?i)\\b(BYTE_LENGTH|CHAR_LENGTH|CHARACTER_LENGTH|CODE_POINTS_TO_(BYTES|STRING)|CONCAT|BYTE_LENGTH|CHAR_LENGTH|CHARACTER_LENGTH|CONCAT|ENDS_WITH|FORMAT|FROM_(BASE32|BASE64|HEX)|LENGTH|LPAD|LOWER|LTRIM|NORMALIZE|NORMALIZE_AND_CASEFOLD|REGEXP_(CONTAINS|EXTRACT|EXTRACT_ALL|REPLACE)|REPLACE(?!\\s+(table|view|model))|REPEAT|REVERSE|RPAD|RTRIM|SAFE_CONVERT_BYTES_TO_STRING|SPLIT|STARTS_WITH|STRPOS|SUBSTR|TO_(BASE32|BASE64|CODE_POINTS|HEX)|TRIM|UPPER)\\b",
+          "match": "(?i)\\b(BYTE_LENGTH|CHAR_LENGTH|CHARACTER_LENGTH|CODE_POINTS_TO_(BYTES|STRING)|CONCAT|BYTE_LENGTH|CHAR_LENGTH|CHARACTER_LENGTH|CONCAT|ENDS_WITH|FORMAT|FROM_(BASE32|BASE64|HEX)|LENGTH|LPAD|LOWER|LTRIM|NORMALIZE|NORMALIZE_AND_CASEFOLD|REGEXP_(CONTAINS|EXTRACT|EXTRACT_ALL|REPLACE)|REPLACE(?!\\]|\\s+(schema|table|view|materialized(\\s+view)?|external\\s+table|model|function|procedure))|REPEAT|REVERSE|RPAD|RTRIM|SAFE_CONVERT_BYTES_TO_STRING|SPLIT|STARTS_WITH|STRPOS|SUBSTR|TO_(BASE32|BASE64|CODE_POINTS|HEX)|TRIM|UPPER)\\b",
           "name": "support.function.string.sql"
         },
         {
