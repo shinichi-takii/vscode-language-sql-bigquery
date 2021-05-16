@@ -22,31 +22,48 @@
         "SELECT",
         "\t${1:column}",
         "FROM `${2:project}.${3:dataset}.${4:table}`",
-        "WHERE ${5:condition}"
+        "WHERE",
+        "\t${5:condition}"
       ]
     },
     "INNER JOIN": {
-      "prefix": "innerjoin",
-      "body": "INNER JOIN `${1:project}.${2:dataset}.${3:table}`"
+      "prefix": "inner join",
+      "body": [
+        "INNER JOIN `${1:project}.${2:dataset}.${3:table}`",
+        "ON",
+        "\t${4:condition}"
+      ]
     },
     "LEFT JOIN": {
-      "prefix": "leftjoin",
-      "body": "LEFT JOIN `${1:project}.${2:dataset}.${3:table}`"
+      "prefix": "left join",
+      "body": [
+        "LEFT JOIN `${1:project}.${2:dataset}.${3:table}`",
+        "ON",
+        "\t${4:condition}"
+      ]
     },
     "RIGHT JOIN": {
-      "prefix": "rightjoin",
-      "body": "RIGHT JOIN `${1:project}.${2:dataset}.${3:table}`"
+      "prefix": "right join",
+      "body": [
+        "RIGHT JOIN `${1:project}.${2:dataset}.${3:table}`",
+        "ON",
+        "\t${4:condition}"
+      ]
     },
     "FULL OUTER JOIN": {
-      "prefix": "fulljoin",
-      "body": "FULL OUTER JOIN `${1:project}.${2:dataset}.${3:table}`"
+      "prefix": "full join",
+      "body": [
+        "FULL OUTER JOIN `${1:project}.${2:dataset}.${3:table}`",
+        "ON",
+        "\t${4:condition}"
+      ]
     },
     "BETWEEN ... AND": {
       "prefix": "between",
       "body": "BETWEEN ${1} AND ${2}"
     },
     "BETWEEN ... AND as date": {
-      "prefix": "betweendate",
+      "prefix": "between date",
       "body": "BETWEEN \"${1:${CURRENT_YEAR:yyyy}-${CURRENT_MONTH:mm}-${CURRENT_DATE:dd}}\" AND \"${2:${CURRENT_YEAR:yyyy}-${CURRENT_MONTH:mm}-${CURRENT_DATE:dd}}\""
     },
     "IN (value, ...)": {
@@ -54,12 +71,44 @@
       "body": "IN (${1:value, ...})"
     },
     "GROUP BY": {
-      "prefix": "groupby",
-      "body": "GROUP BY ${1}"
+      "prefix": "group by",
+      "body": [
+        "GROUP BY",
+        "\t${1:expression}"
+      ]
     },
     "ORDER BY": {
-      "prefix": "orderby",
-      "body": "ORDER BY ${1}"
+      "prefix": "order by",
+      "body": [
+        "ORDER BY",
+        "\t${1:expression} ${2:[ASC|DESC]} ${3:[NULLS FIRST|NULLS LAST]}"
+      ]
+    },
+    "WHERE": {
+      "prefix": "where",
+      "body": [
+        "WHERE",
+        "\t${1:condition}"
+      ]
+    },
+    "HAVING": {
+      "prefix": "having",
+      "body": [
+        "HAVING",
+        "\t${1:condition}"
+      ]
+    },
+    "QUALIFY": {
+      "prefix": "qualify",
+      "body": [
+        "QUALIFY",
+        "\t${1:condition}"
+      ],
+      "description": "Filters the results of analytic functions."
+    },
+    "DISTINCT": {
+      "prefix": "distinct",
+      "body": "DISTINCT"
     },
     "PARTITION BY": {
       "prefix": "partitionby",
@@ -85,10 +134,10 @@
       "prefix": "with",
       "body": [
         "WITH ${1:with_query_name} AS (",
-        "  SELECT",
-        "    ${2}",
-        "  FROM",
-        "    `${3:project}.${4:dataset}.${5:table}`",
+        "\tSELECT",
+        "\t\t${2}",
+        "\tFROM",
+        "\t\t`${3:project}.${4:dataset}.${5:table}`",
         ")",
         ""
       ]
@@ -100,6 +149,52 @@
     "_PARTITIONTIME BETWEEN ...": {
       "prefix": ["_partitiontime", "partitiontime"],
       "body": "_PARTITIONTIME BETWEEN \"${1:${CURRENT_YEAR:yyyy}-${CURRENT_MONTH:mm}-${CURRENT_DATE:dd}}\" AND \"${2:${CURRENT_YEAR:yyyy}-${CURRENT_MONTH:mm}-${CURRENT_DATE:dd}}\""
+    },
+    "TABLESAMPLE": {
+      "prefix": ["tablesample", "sampling"],
+      "body": [
+        "SELECT",
+        "\t${1:column}",
+        "FROM `${2:project}.${3:dataset}.${4:table}`",
+        "\tTABLESAMPLE SYSTEM (${5:value} PERCENT)"
+      ],
+      "description": "Table sampling lets you query random subsets of data from large BigQuery tables."
+    },
+    "FOR SYSTEM_TIME AS OF": {
+      "prefix": ["system_time", "time travel"],
+      "body": [
+        "SELECT",
+        "\t${1:column}",
+        "FROM `${2:project}.${3:dataset}.${4:table}`",
+        "\tFOR SYSTEM_TIME AS OF TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${5:1} HOUR)"
+      ],
+      "description": "Time travel to access data at any point within the last 7 days."
+    },
+    "PIVOT": {
+      "prefix": "pivot",
+      "body": [
+        "SELECT",
+        "\t*",
+        "FROM `${1:project}.${2:dataset}.${3:table}`",
+        "\tPIVOT(",
+        "\t\t${4:aggregate_function(aggregate_column)}",
+        "\t\tFOR ${5:input_column}",
+        "\t\tIN (${6:pivot_column, ...})",
+        "\t)"
+      ]
+    },
+    "UNPIVOT": {
+      "prefix": "unpivot",
+      "body": [
+        "SELECT",
+        "\t*",
+        "FROM `${1:project}.${2:dataset}.${3:table}`",
+        "\tUNPIVOT${4:[ INCLUDE NULLS|EXCLUDE NULLS ]}(",
+        "\t\t${5:value_column_name}",
+        "\t\tFOR ${6:dimension_column_name}",
+        "\t\tIN (${7:unpivot_column, ...})",
+        "\t)"
+      ]
     },
     // DML
     "INSERT INTO": {
@@ -128,6 +223,10 @@
         "DELETE FROM `${1:project}.${2:dataset}.${3:table}`",
         "WHERE ${4:condition}"
       ]
+    },
+    "TRUNCATE TABLE": {
+      "prefix": "truncate table",
+      "body": "TRUNCATE TABLE `${1:project}.${2:dataset}.${3:table}`"
     },
     "UPDATE ... SET": {
       "prefix": "update",
@@ -244,7 +343,10 @@
       "prefix": "create view",
       "body": [
         "CREATE ${1:[OR REPLACE] }VIEW ${2:[IF NOT EXISTS] }`${4:project}.${5:dataset}.${6:view}`",
-        "${7:[OPTIONS (",
+        "${7:[(",
+        "\tcolumn_name_list",
+        ")]}",
+        "${8:[OPTIONS (",
         "\tdescription = \"description\",",
         "\texpiration_timestamp = TIMESTAMP \"YYYY-MM-DD HH:MI:SS UTC\",",
         "\tfriendly_name = \"friendly_name\",",
@@ -252,8 +354,8 @@
         ")]}",
         "AS",
         "SELECT",
-        "\t${8:column}",
-        "FROM `${9:project}.${10:dataset}.${11:table}`"
+        "\t${9:column}",
+        "FROM `${10:project}.${11:dataset}.${12:table}`"
       ]
     },
     "CREATE MATERIALIZED VIEW": {
@@ -289,28 +391,28 @@
         "\tcolumn type OPTIONS (description = \"comment\")",
         ")]}",
         "${7:[WITH PARTITION COLUMNS]}",
-        "${8:[OPTIONS (",
-        "\tdescription = \"description\",",
-        "\tallow_jagged_rows = false,",
-        "\tallow_quoted_newlines = false,",
-        "\tcompression = \"GZIP\",",
-        "\tenable_logical_types = false,",
-        "\tencoding = \"UTF8\"|\"ISO_8859_1\",",
-        "\texpiration_timestamp = TIMESTAMP \"YYYY-MM-DD HH:MI:SS UTC\",",
-        "\tfield_delimiter = \",\"|\"\\t\"|\"other\",",
-        "\tformat = \"AVRO\"|\"CSV\"|\"DATASTORE_BACKUP\"|\"GOOGLE_SHEETS\"|\"NEWLINE_DELIMITED_JSON\"|\"ORC\"|\"PARQUET\",",
-        "\tdecimal_target_types = [\"NUMERIC\", \"BIGNUMERIC\"],",
-        "\thive_partition_uri_prefix = \"gs://bucket/path\",",
-        "\tignore_unknown_values = false,",
-        "\tmax_bad_records = 0,",
-        "\tnull_marker = NULL,",
-        "\tprojection_fields = \"\",",
-        "\tquote = \"\\\"\",",
-        "\trequire_hive_partition_filter = false,",
-        "\tsheet_range = \"sheet1!A1:B20\",",
-        "\tskip_leading_rows = 0,",
-        "\turis = [\"gs://bucket/path/*\"]",
-        ")]}"
+        "OPTIONS (",
+        "\t${8:description = \"description\",}",
+        "\t${9:allow_jagged_rows = false,}",
+        "\t${10:allow_quoted_newlines = false,}",
+        "\t${11:compression = \"GZIP\",}",
+        "\t${12:enable_logical_types = false,}",
+        "\t${13:encoding = \"UTF8\"|\"ISO_8859_1\",}",
+        "\t${14:expiration_timestamp = TIMESTAMP \"YYYY-MM-DD HH:MI:SS UTC\",}",
+        "\t${15:field_delimiter = \",\"|\"\\t\"|\"other\",}",
+        "\t${16:format = \"AVRO\"|\"CSV\"|\"DATASTORE_BACKUP\"|\"GOOGLE_SHEETS\"|\"NEWLINE_DELIMITED_JSON\"|\"ORC\"|\"PARQUET\",}",
+        "\t${17:decimal_target_types = [\"NUMERIC\", \"BIGNUMERIC\"],}",
+        "\t${18:hive_partition_uri_prefix = \"gs://bucket/path\",}",
+        "\t${19:ignore_unknown_values = false,}",
+        "\t${20:max_bad_records = 0,}",
+        "\t${21:null_marker = NULL,}",
+        "\t${22:projection_fields = \"\",}",
+        "\t${23:quote = \"\\\"\",}",
+        "\t${24:require_hive_partition_filter = false,}",
+        "\t${25:sheet_range = \"sheet1!A1:B20\",}",
+        "\t${26:skip_leading_rows = 0,}",
+        "\t${27:uris = [\"gs://bucket/path/*\"]}",
+        ")"
       ]
     },
     "CREATE TEMPORARY JavaScript FUNCTION": {
@@ -451,6 +553,13 @@
         "\tDROP COLUMN ${4:[IF EXISTS]} ${5:column_name}"
       ]
     },
+    "ALTER COLUMN DROP NOT NULL": {
+      "prefix": "alter column drop not null",
+      "body": [
+        "ALTER TABLE ${1:[IF EXISTS]} `${2:project}.${3:dataset}.${4:table}`",
+        "\tALTER COLUMN ${5:[IF EXISTS]} ${6:column_name} DROP NOT NULL"
+      ]
+    },
     "ALTER VIEW SET OPTIONS": {
       "prefix": "alter view",
       "body": [
@@ -476,6 +585,11 @@
         "\tlabels = [(\"key\", \"value\")]}",
         ")"
       ]
+    },
+    // Debugging statements
+    "ASSERT": {
+      "prefix": "assert",
+      "body": "ASSERT ${1:expression}${2: [AS \"description\"]}"
     },
     // Scripting
     "CALL PROCEDURE": {
@@ -508,30 +622,57 @@
         "SET ${1:variable_name} = (${2:SELECT query});"
       ]
     },
+    "EXECUTE IMMEDIATE": {
+      "prefix": "execute immediate",
+      "body": [
+        "EXECUTE IMMEDIATE",
+        "\t${1:\"sql_expression @parameter_name\"}",
+        "\t${2:[INTO variable]}",
+        "\t${3:[USING value AS parameter_name]};"
+      ],
+      "description": "Executes a dynamic SQL statement on the fly."
+    },
     "BEGIN ... END": {
       "prefix": "begin/end",
       "body": [
         "BEGIN",
         "\t${1:statements}",
+        "EXCEPTION WHEN ERROR THEN",
+        "\t${2:statements}",
+        "\t${3:[# Get error informations",
+        "\tSELECT",
+        "\t\t@@error.message,",
+        "\t\t@@error.stack_trace,",
+        "\t\t@@error.statement_text,",
+        "\t\t@@error.formatted_stack_trace;]}",
         "END;"
       ]
     },
     "IF ... THEN": {
-      "prefix": "if",
+      "prefix": "if then",
       "body": [
         "IF ${1:condition} THEN",
         "\t${2:statements}",
         "END IF;"
       ]
     },
-    "IF ... THEN ELSE": {
-      "prefix": "if/else",
+    "IF ... ELSEIF ... ELSE": {
+      "prefix": "if elseif else",
       "body": [
         "IF ${1:condition} THEN",
         "\t${2:statements}",
+        "ELSEIF ${3:condition} THEN",
+        "\t${4:statements}",
         "ELSE",
-        "\t${3:statements}",
+        "\t${5:statements}",
         "END IF;"
+      ]
+    },
+    "ELSEIF ... THEN": {
+      "prefix": "elseif",
+      "body": [
+        "ELSEIF ${1:condition} THEN",
+        "\t${2:statements}"
       ]
     },
     "ELSE": {
@@ -554,6 +695,9 @@
       "body": [
         "LOOP",
         "\t${1:statements}",
+        "\tIF ${2:condition} THEN",
+        "\t\tBREAK;",
+        "\tEND IF;",
         "END LOOP;"
       ]
     },
@@ -585,11 +729,38 @@
       "body": "ITERATE;",
       "description": "Synonym for CONTINUE."
     },
+    "RAISE": {
+      "prefix": "raise",
+      "body": "RAISE ${1:[USING MESSAGE = \"message\"]};",
+      "description": "Raises an error."
+    },
     "RETURN": {
       "prefix": "return",
       "body": "RETURN;",
       "description": "RETURN terminates execution of the current script."
     },
+    // Other statements
+    "BQ.JOBS.CANCEL": {
+      "prefix": "call bq jobs cancel",
+      "body": "CALL BQ.JOBS.CANCEL(${1:\"project-id.job_id\"});",
+      "description": "Canceling a job."
+    },
+    "EXPORT DATA": {
+      "prefix": "export data",
+      "body": [
+        "EXPORT DATA",
+        "OPTIONS (",
+        "\t${1:format = \"AVRO\"|\"CSV\"|\"JSON\"|\"PARQUET\",}",
+        "\t${2:compression = \"GZIP\"|\"DEFLATE\"|\"SNAPPY\",}",
+        "\t${3:field_delimiter = \",\"|\"\\t\"|\"other\",}",
+        "\t${4:header = false|true,}",
+        "\t${5:overwrite = false|true,}",
+        "\t${6:uri = \"gs://bucket/path/file_*.csv.gz\"}",
+        ") AS",
+        "query_statement"
+      ]
+    },
+    // Functions
     "CAST()": {
       "prefix": "cast",
       "body": "CAST(${1:expr} AS ${2:type})",
@@ -1087,6 +1258,12 @@
         "Computes the hash of the input using the SHA-512 algorithm."
       ]
     },
+    // String functions
+    "ASCII()": {
+      "prefix": "ascii",
+      "body": "ASCII(${1:value})",
+      "description": "Returns the ASCII code for the first character or byte in value."
+    },
     "BYTE_LENGTH()": {
       "prefix": "byte_length",
       "body": "BYTE_LENGTH(${1:value})",
@@ -1101,6 +1278,11 @@
       "prefix": "character_length",
       "body": "CHARACTER_LENGTH(${1:value})",
       "description": "Synonym for CHAR_LENGTH."
+    },
+    "CHR()": {
+      "prefix": "chr",
+      "body": "CHR(${1:value})",
+      "description": "Takes a Unicode code point and returns the character that matches the code point."
     },
     "CODE_POINTS_TO_BYTES()": {
       "prefix": "code_points_to_bytes",
@@ -1146,6 +1328,21 @@
       "body": "FROM_HEX(${1:string})",
       "description": "Converts a hexadecimal-encoded STRING into BYTES format."
     },
+    "INITCAP()": {
+      "prefix": "initcap",
+      "body": "INITCAP(${1:value}${2:[, delimiters]})",
+      "description": "Returns it with the first character in each word in uppercase and all other characters in lowercase."
+    },
+    "INSTR()": {
+      "prefix": "instr",
+      "body": "INSTR(${1:source_value}, ${2:search_value}${3:[, position[, occurrence]]})",
+      "description": "Returns the lowest 1-based index of search_value in source_value."
+    },
+    "LEFT()": {
+      "prefix": "left",
+      "body": "LEFT(${1:value}, ${2:length})",
+      "description": "Return the specified leftmost number of characters."
+    },
     "LENGTH()": {
       "prefix": "length",
       "body": "LENGTH(${1:value})",
@@ -1182,33 +1379,40 @@
       "body": "NORMALIZE_AND_CASEFOLD(${1:value[, normalization_mode]})",
       "description": "Takes a STRING, `value`, and performs the same actions as NORMALIZE, as well as casefolding for case-insensitive operations."
     },
+    "OCTET_LENGTH()": {
+      "prefix": "octet_length",
+      "body": "OCTET_LENGTH(${1:value})",
+      "description": "Alias for BYTE_LENGTH."
+    },
     "REGEXP_CONTAINS()": {
       "prefix": "regexp_contains",
       "body": "REGEXP_CONTAINS(${1:value}, r\"${2:regex}\")",
-      "description": [
-        "Returns TRUE if `value` is a partial match for the regular expression, `regex`."
-      ]
+      "description": "Returns TRUE if `value` is a partial match for the regular expression, `regex`."
     },
     "REGEXP_EXTRACT()": {
       "prefix": "regexp_extract",
-      "body": "REGEXP_EXTRACT(${1:value}, r\"${2:regex}\")",
-      "description": [
-        "Returns the first substring in `value` that matches the regular expression, `regex`. Returns NULL if there is no match."
-      ]
+      "body": "REGEXP_EXTRACT(${1:value}, r\"${2:regex}\"${3:[, position[, occurrence]]})",
+      "description": "Returns the first substring in `value` that matches the regular expression, `regex`. Returns NULL if there is no match."
     },
     "REGEXP_EXTRACT_ALL()": {
       "prefix": "regexp_extract_all",
       "body": "REGEXP_EXTRACT_ALL(${1:value}, r\"${2:regex}\")",
-      "description": [
-        "Returns an array of all substrings of `value` that match the regular expression, `regex`."
-      ]
+      "description": "Returns an array of all substrings of `value` that match the regular expression, `regex`."
+    },
+    "REGEXP_INSTR()": {
+      "prefix": "regexp_instr",
+      "body": "REGEXP_INSTR(${1:source_value}, r\"${2:regex}\"${3:[, position[, occurrence, [occurrence_position]]]})",
+      "description": "Returns the lowest 1-based index of a regular expression, regexp, in source_value."
     },
     "REGEXP_REPLACE()": {
       "prefix": "regexp_replace",
       "body": "REGEXP_REPLACE(${1:value}, r\"${2:regex}\", ${3:replacement})",
-      "description": [
-        "Returns a STRING where all substrings of `value` that match regular expression `regex` are replaced with `replacement`."
-      ]
+      "description": "Returns a STRING where all substrings of `value` that match regular expression `regex` are replaced with `replacement`."
+    },
+    "REGEXP_SUBSTR()": {
+      "prefix": "regexp_substr",
+      "body": "REGEXP_SUBSTR(${1:value}, r\"${2:regex}\"${3:[, position[, occurrence]]})",
+      "description": "Synonym for REGEXP_EXTRACT."
     },
     "REPLACE()": {
       "prefix": "replace",
@@ -1227,6 +1431,11 @@
       "body": "REVERSE(${1:value})",
       "description": "Returns the reverse of the input STRING or BYTES."
     },
+    "RIGHT()": {
+      "prefix": "right",
+      "body": "RIGHT(${1:value}, ${2:length})",
+      "description": "Return the specified rightmost number of characters."
+    },
     "RPAD()": {
       "prefix": "rpad",
       "body": "RPAD(${1:original_value}, ${2:return_length[, pattern]})",
@@ -1243,6 +1452,11 @@
       "prefix": "safe_convert_bytes_to_string",
       "body": "SAFE_CONVERT_BYTES_TO_STRING(${1:value})",
       "description": "Converts a sequence of bytes to a string."
+    },
+    "SOUNDEX()": {
+      "prefix": "soundex",
+      "body": "SOUNDEX(${1:value})",
+      "description": "Returns a STRING that represents the Soundex code for value."
     },
     "SPLIT()": {
       "prefix": "split",
@@ -1263,9 +1477,16 @@
     },
     "SUBSTR()": {
       "prefix": "substr",
-      "body": "SUBSTR(${1:value}, ${2:position[, length]})",
+      "body": "SUBSTR(${1:value}, ${2:position}${3:[, length]})",
       "description": [
         "Returns a substring of the supplied `value`."
+      ]
+    },
+    "SUBSTRING()": {
+      "prefix": "substring",
+      "body": "SUBSTRING(${1:value}, ${2:position}${3:[, length]})",
+      "description": [
+        "Returns a substring of the supplied `value`. (Alias for SUBSTR)"
       ]
     },
     "TO_BASE32()": {
@@ -1290,10 +1511,20 @@
       "body": "TO_HEX(${1:bytes})",
       "description": "Converts a sequence of BYTES into a hexadecimal STRING."
     },
+    "TRANSLATE()": {
+      "prefix": "translate",
+      "body": "TRANSLATE(${1:expression}, ${2:source_characters}, ${3:target_characters})",
+      "description": "In `expression`, replaces each character in `source_characters` with the corresponding character in `target_characters`."
+    },
     "TRIM()": {
       "prefix": "trim",
       "body": "TRIM(${1:value1[, value2]})",
       "description": "Removes all leading and trailing characters that match `value2`."
+    },
+    "UNICODE()": {
+      "prefix": "unicode",
+      "body": "UNICODE(${1:value})",
+      "description": "Returns the Unicode code point for the first character in value."
     },
     "UPPER()": {
       "prefix": "upper",
@@ -1302,20 +1533,51 @@
         "For STRING arguments, returns the original string with all alphabetic characters in uppercase."
       ]
     },
+    // JSON functions
     "JSON_EXTRACT()": {
       "prefix": "json_extract",
-      "body": "JSON_EXTRACT(${1:json_string_expr}, ${2:json_path_string_literal})",
-      "description": "Which returns JSON values as STRINGs."
+      "body": "JSON_EXTRACT(${1:'json_string_expr'}, ${2:'json_path'})",
+      "description": "Extracts a JSON values. (Legacy JSON function, recommend using `JSON_QUERY`)"
+    },
+    "JSON_QUERY()": {
+      "prefix": "json_query",
+      "body": "JSON_QUERY(${1:\"json_string_expr\"}, ${2:\"json_path\"})",
+      "description": "Extracts a JSON values."
     },
     "JSON_EXTRACT_SCALAR()": {
       "prefix": "json_extract_scalar",
-      "body": "JSON_EXTRACT_SCALAR(${1:json_string_expr}, ${2:json_path_string_literal})",
-      "description": "Which returns scalar JSON values as STRINGs."
+      "body": "JSON_EXTRACT_SCALAR(${1:'json_string_expr'}, ${2:'json_path'})",
+      "description": "Extracts a scalar value. (Legacy JSON function, recommend using `JSON_VALUE`)"
+    },
+    "JSON_VALUE()": {
+      "prefix": "json_value",
+      "body": "JSON_VALUE(${1:\"json_string_expr\"}, ${2:\"json_path\"})",
+      "description": "Extracts a scalar value."
+    },
+    "JSON_EXTRACT_ARRAY()": {
+      "prefix": "json_extract_array",
+      "body": "JSON_EXTRACT_ARRAY(${1:'json_string_expr'}, ${2:'json_path'})",
+      "description": "Extracts an array of JSON values. (Legacy JSON function, recommend using `JSON_QUERY_ARRAY`)"
+    },
+    "JSON_QUERY_ARRAY()": {
+      "prefix": "json_query_array",
+      "body": "JSON_QUERY_ARRAY(${1:\"json_string_expr\"}, ${2:\"json_path\"})",
+      "description": "Extracts an array of JSON values."
+    },
+    "JSON_EXTRACT_STRING_ARRAY()": {
+      "prefix": "json_extract_string_array",
+      "body": "JSON_EXTRACT_STRING_ARRAY(${1:'json_string_expr'}, ${2:'json_path'})",
+      "description": "Extracts an array of scalar values. (Legacy JSON function, recommend using `JSON_VALUE_ARRAY`)"
+    },
+    "JSON_VALUE_ARRAY()": {
+      "prefix": "json_value_array",
+      "body": "JSON_VALUE_ARRAY(${1:\"json_string_expr\"}, ${2:\"json_path\"})",
+      "description": "Extracts an array of scalar values."
     },
     "TO_JSON_STRING()": {
       "prefix": "to_json_string",
       "body": "TO_JSON_STRING(${1:value[, pretty_print]})",
-      "description": "Returns a JSON-formatted string representation of `value`."
+      "description": "Returns a JSON-formatted string representation of the value."
     },
     "ARRAY_CONCAT()": {
       "prefix": "array_concat",
@@ -1380,6 +1642,7 @@
       "body": "SAFE_ORDINAL(${1:one_based_offset})",
       "description": "Identical to `OFFSET` and `ORDINAL`, except returns `NULL` if the index is out of range."
     },
+    // Date functions
     "CURRENT_DATE()": {
       "prefix": "current_date",
       "body": "CURRENT_DATE(${1:[time_zone]})",
@@ -1395,12 +1658,12 @@
       ]
     },
     "DATE(year, month, day)": {
-      "prefix": "date use INT",
+      "prefix": "date use int",
       "body": "DATE(${1:year}, ${2:month}, ${3:day})",
       "description": "Constructs a `DATE` from `INT64` values representing the year, month, and day."
     },
     "DATE(timestamp)": {
-      "prefix": "date use TIMESTAMP",
+      "prefix": "date use timestamp",
       "body": "DATE(${1:timestamp_expression[, timezone]})",
       "description": "Converts a `timestamp_expression` to a `DATE` data type."
     },
@@ -1444,6 +1707,11 @@
         "Formats the `date_expr` according to the specified `format_string`."
       ]
     },
+    "LAST_DAY()": {
+      "prefix": "last_day",
+      "body": "LAST_DAY(${1:date_expression}${2:[, date_part]})",
+      "description": "Returns the last day from a date expression."
+    },
     "PARSE_DATE()": {
       "prefix": "parse_date",
       "body": "PARSE_DATE(${1:format_string}, ${2:date_string})",
@@ -1456,6 +1724,7 @@
       "body": "UNIX_DATE(${1:date_expression})",
       "description": "Returns the number of days since 1970-01-01."
     },
+    // Datetime functions
     "CURRENT_DATETIME()": {
       "prefix": "current_datetime",
       "body": "CURRENT_DATETIME(${1:[timezone]})",
@@ -1464,17 +1733,17 @@
       ]
     },
     "DATETIME(year, month, day, hour, minute, second)": {
-      "prefix": "datetime use INT",
+      "prefix": "datetime use int",
       "body": "DATETIME(${1:year}, ${2:month}, ${3:day}, ${4:hour}, ${5:minute}, ${6:second})",
       "description": "Constructs a `DATETIME` object using `INT64` values representing the year, month, day, hour, minute, and second."
     },
     "DATETIME(date, time)": {
-      "prefix": "datetime use DATE TIME",
+      "prefix": "datetime use datetime",
       "body": "DATETIME(${1:date_expression}, ${2:time_expression})",
       "description": "Constructs a `DATETIME` object using a `DATE` object and a `TIME` object."
     },
     "DATETIME(timestamp)": {
-      "prefix": "datetime use TIMESTAMP",
+      "prefix": "datetime use timestamp",
       "body": "DATETIME(${1:timestamp_expression[, timezone]})",
       "description": "Constructs a `DATETIME` object using a `TIMESTAMP` object."
     },
@@ -1531,7 +1800,7 @@
       "description": "Constructs a `TIME` object using `INT64` values representing the hour, minute, and second."
     },
     "TIME(datetime)": {
-      "prefix": "time use object",
+      "prefix": "time use datetime",
       "body": "TIME(${1:datetime})",
       "description": "Constructs a `TIME` object using a `DATETIME` object."
     },
@@ -1602,17 +1871,17 @@
       ]
     },
     "TIMESTAMP(string)": {
-      "prefix": "timestamp use STRING",
+      "prefix": "timestamp use string",
       "body": "TIMESTAMP(${1:string_expression[, timezone]})",
       "description": "Converts a STRING expression to a TIMESTAMP data type."
     },
     "TIMESTAMP(date)": {
-      "prefix": "timestamp use DATE",
+      "prefix": "timestamp use date",
       "body": "TIMESTAMP(${1:date_expression[, timezone]})",
       "description": "Converts a DATE object to a TIMESTAMP data type."
     },
     "TIMESTAMP(datetime)": {
-      "prefix": "timestamp use DATETIME",
+      "prefix": "timestamp use datetime",
       "body": "TIMESTAMP(${1:datetime_expression[, timezone]})",
       "description": "Converts a DATETIME object to a TIMESTAMP data type."
     },
@@ -1858,12 +2127,11 @@
       "prefix": "hour",
       "body": "EXTRACT(HOUR FROM ${1:timestamp_expression [AT TIME ZONE tz_spec]})"
     },
+    // Debugging functions
     "ERROR()": {
       "prefix": "error",
       "body": "ERROR(${1:error_message})",
-      "description": [
-        "Returns an error. The error_message argument is a STRING."
-      ]
+      "description": "Returns an error. The error_message argument is a STRING."
     },
     "SAFE.prefix()": {
       "prefix": "safeprefix",
@@ -1919,146 +2187,196 @@
         "\t${5:[STRUCT(<threshold FLOAT64> AS threshold)]})"
       ]
     },
-    "ST_GEOGPOINT()": {
-      "prefix": "stgeogpoint",
-      "body": "ST_GEOGPOINT(${1:longitude}, ${2:latitude})"
+    // Geography functions
+    "ST_AREA()": {
+      "prefix": "st_area",
+      "body": "ST_AREA(${1:geography_expression[, spheroid=FALSE]})"
     },
-    "ST_MAKELINE()": {
-      "prefix": "stmakeline",
-      "body": "ST_MAKELINE(${1:geography_1, geography_2 | array_of_geography})"
-    },
-    "ST_MAKEPOLYGON()": {
-      "prefix": "stmakepolygon",
-      "body": "ST_MAKEPOLYGON(${1:geography_expression[, array_of_geography]})"
-    },
-    "ST_MAKEPOLYGONORIENTED()": {
-      "prefix": "stmakepolygonoriented",
-      "body": "ST_MAKEPOLYGONORIENTED(${1:array_of_geography})"
-    },
-    "ST_GEOGFROMGEOJSON()": {
-      "prefix": "stgeogfromgeojson",
-      "body": "ST_GEOGFROMGEOJSON(${1:geojson_string})"
-    },
-    "ST_GEOGFROMTEXT()": {
-      "prefix": "stgeogfromtext",
-      "body": "ST_GEOGFROMTEXT(${1:wkt_string})"
+    "ST_ASBINARY()": {
+      "prefix": "st_asbinary",
+      "body": "ST_ASBINARY(${1:geography_expression})"
     },
     "ST_ASGEOJSON()": {
-      "prefix": "stasgeojson",
+      "prefix": "st_asgeojson",
       "body": "ST_ASGEOJSON(${1:geography_expression})"
     },
     "ST_ASTEXT()": {
-      "prefix": "stastext",
+      "prefix": "st_astext",
       "body": "ST_ASTEXT(${1:geography_expression})"
     },
     "ST_BOUNDARY()": {
-      "prefix": "stboundary",
+      "prefix": "st_boundary",
       "body": "ST_BOUNDARY(${1:geography_expression})"
     },
     "ST_CENTROID()": {
-      "prefix": "stcentroid",
+      "prefix": "st_centroid",
       "body": "ST_CENTROID(${1:geography_expression})"
     },
+    "ST_CENTROID_AGG()": {
+      "prefix": "st_centroid_agg",
+      "body": "ST_CENTROID_AGG(${1:geography})"
+    },
     "ST_CLOSESTPOINT()": {
-      "prefix": "stclosestpoint",
-      "body": "ST_CLOSESTPOINT(${1:geography_1}, ${2:geography_2[, spheroid=FALSE]})"
+      "prefix": "st_closestpoint",
+      "body": "ST_CLOSESTPOINT(${1:geography_1}, ${2:geography_2}${3:[, spheroid=FALSE]})"
     },
-    "ST_DIFFERENCE()": {
-      "prefix": "stdifference",
-      "body": "ST_DIFFERENCE(${1:geography_1}, ${2:geography_2})"
-    },
-    "ST_INTERSECTION()": {
-      "prefix": "stintersection",
-      "body": "ST_INTERSECTION(${1:geography_1}, ${2:geography_2})"
-    },
-    "ST_SNAPTOGRID()": {
-      "prefix": "stsnaptogrid",
-      "body": "ST_SNAPTOGRID(${1:geography_expression}, ${2:grid_size})"
-    },
-    "ST_UNION()": {
-      "prefix": "stunion",
-      "body": "ST_UNION(${1:geography_1, geography_2 | array_of_geography})"
+    "ST_CLUSTERDBSCAN()": {
+      "prefix": "st_clusterdbscan",
+      "body": "ST_CLUSTERDBSCAN(${1:geography_column}, ${2:epsilon}, ${3:minimum_geographies}) OVER (${4:...})"
     },
     "ST_CONTAINS()": {
-      "prefix": "stcontains",
+      "prefix": "st_contains",
       "body": "ST_CONTAINS(${1:geography_1}, ${2:geography_2})"
     },
+    "ST_CONVEXHULL()": {
+      "prefix": "st_convexhull",
+      "body": "ST_CONVEXHULL(${1:geography_expression})"
+    },
     "ST_COVEREDBY()": {
-      "prefix": "stcoveredby",
+      "prefix": "st_coveredby",
       "body": "ST_COVEREDBY(${1:geography_1}, ${2:geography_2})"
     },
     "ST_COVERS()": {
-      "prefix": "stcovers",
+      "prefix": "st_covers",
       "body": "ST_COVERS(${1:geography_1}, ${2:geography_2})"
     },
+    "ST_DIFFERENCE()": {
+      "prefix": "st_difference",
+      "body": "ST_DIFFERENCE(${1:geography_1}, ${2:geography_2})"
+    },
+    "ST_DIMENSION()": {
+      "prefix": "st_dimension",
+      "body": "ST_DIMENSION(${1:geography_expression})"
+    },
     "ST_DISJOINT()": {
-      "prefix": "stdisjoint",
+      "prefix": "st_disjoint",
       "body": "ST_DISJOINT(${1:geography_1}, ${2:geography_2})"
     },
+    "ST_DISTANCE()": {
+      "prefix": "st_distance",
+      "body": "ST_DISTANCE(${1:geography_1}, ${2:geography_2[, spheroid=FALSE]})"
+    },
+    "ST_DUMP()": {
+      "prefix": "st_dump",
+      "body": "ST_DUMP(${1:geography}${2:[, dimension]})"
+    },
     "ST_DWITHIN()": {
-      "prefix": "stdwithin",
+      "prefix": "st_dwithin",
       "body": "ST_DWITHIN(${1:geography_1}, ${2:geography_2}, ${3:distance[, spheroid=FALSE]})"
     },
     "ST_EQUALS()": {
-      "prefix": "stequals",
+      "prefix": "st_equals",
       "body": "ST_EQUALS(${1:geography_1}, ${2:geography_2})"
     },
+    "ST_GEOGFROMGEOJSON()": {
+      "prefix": "st_geogfromgeojson",
+      "body": "ST_GEOGFROMGEOJSON(${1:geojson_string}${2:[, make_valid => constant_expression]})"
+    },
+    "ST_GEOGFROMTEXT()": {
+      "prefix": "st_geogfromtext",
+      "body": "ST_GEOGFROMTEXT(${1:wkt_string}${2:[, oriented => boolean_constant_1]}${3:[, planar => boolean_constant_2]}${4:[, make_valid => boolean_constant_3]})"
+    },
+    "ST_GEOGFROMWKB()": {
+      "prefix": "st_geogfromwkb",
+      "body": "ST_GEOGFROMWKB(${1:wkb_bytes_expression|wkb_hex_string_expression})"
+    },
+    "ST_GEOGPOINT()": {
+      "prefix": "st_geogpoint",
+      "body": "ST_GEOGPOINT(${1:longitude}, ${2:latitude})"
+    },
+    "ST_GEOGPOINTFROMGEOHASH()": {
+      "prefix": "st_geogpointfromgeohash",
+      "body": "ST_GEOGPOINTFROMGEOHASH(${1:geohash})"
+    },
+    "ST_GEOHASH()": {
+      "prefix": "st_geohash",
+      "body": "ST_GEOHASH(${1:geography_expression}, ${2:maxchars})"
+    },
+    "ST_INTERSECTION()": {
+      "prefix": "st_intersection",
+      "body": "ST_INTERSECTION(${1:geography_1}, ${2:geography_2})"
+    },
     "ST_INTERSECTS()": {
-      "prefix": "stintersects",
+      "prefix": "st_intersects",
       "body": "ST_INTERSECTS(${1:geography_1}, ${2:geography_2})"
     },
     "ST_INTERSECTSBOX()": {
-      "prefix": "stintersectsbox",
+      "prefix": "st_intersectsbox",
       "body": "ST_INTERSECTSBOX(${1:geography}, ${2:lng1}, ${3:lat1}, ${4:lng2}, ${5:lat2})"
     },
-    "ST_TOUCHES()": {
-      "prefix": "sttouches",
-      "body": "ST_TOUCHES(${1:geography_1}, ${2:geography_2})"
-    },
-    "ST_WITHIN()": {
-      "prefix": "stwithin",
-      "body": "ST_WITHIN(${1:geography_1}, ${2:geography_2})"
-    },
-    "ST_ISEMPTY()": {
-      "prefix": "stisempty",
-      "body": "ST_ISEMPTY(${1:geography_expression})"
-    },
     "ST_ISCOLLECTION()": {
-      "prefix": "stiscollection",
+      "prefix": "st_iscollection",
       "body": "ST_ISCOLLECTION(${1:geography_expression})"
     },
-    "ST_DIMENSION()": {
-      "prefix": "stdimension",
-      "body": "ST_DIMENSION(${1:geography_expression})"
-    },
-    "ST_NUMPOINTS()": {
-      "prefix": "stnumpoints",
-      "body": "ST_NUMPOINTS(${1:geography_expression})"
-    },
-    "ST_AREA()": {
-      "prefix": "starea",
-      "body": "ST_AREA(${1:geography_expression[, spheroid=FALSE]})"
-    },
-    "ST_DISTANCE()": {
-      "prefix": "stdistance",
-      "body": "ST_DISTANCE(${1:geography_1}, ${2:geography_2[, spheroid=FALSE]})"
+    "ST_ISEMPTY()": {
+      "prefix": "st_isempty",
+      "body": "ST_ISEMPTY(${1:geography_expression})"
     },
     "ST_LENGTH()": {
-      "prefix": "stlength",
+      "prefix": "st_length",
       "body": "ST_LENGTH(${1:geography_expression[, spheroid=FALSE]})"
     },
+    "ST_MAKELINE()": {
+      "prefix": "st_makeline",
+      "body": "ST_MAKELINE(${1:geography_1, geography_2 | array_of_geography})"
+    },
+    "ST_MAKEPOLYGON()": {
+      "prefix": "st_makepolygon",
+      "body": "ST_MAKEPOLYGON(${1:geography_expression[, array_of_geography]})"
+    },
+    "ST_MAKEPOLYGONORIENTED()": {
+      "prefix": "st_makepolygonoriented",
+      "body": "ST_MAKEPOLYGONORIENTED(${1:array_of_geography})"
+    },
     "ST_MAXDISTANCE()": {
-      "prefix": "stmaxdistance",
+      "prefix": "st_maxdistance",
       "body": "ST_MAXDISTANCE(${1:geography_1}, ${2:geography_2[, spheroid=FALSE]})"
     },
+    "ST_NPOINTS()": {
+      "prefix": "st_npoints",
+      "body": "ST_NPOINTS(${1:geography_expression})"
+    },
+    "ST_NUMPOINTS()": {
+      "prefix": "st_numpoints",
+      "body": "ST_NUMPOINTS(${1:geography_expression})"
+    },
     "ST_PERIMETER()": {
-      "prefix": "stperimeter",
+      "prefix": "st_perimeter",
       "body": "ST_PERIMETER(${1:geography_expression[, spheroid=FALSE]})"
     },
+    "ST_SIMPLIFY()": {
+      "prefix": "st_simplify",
+      "body": "ST_SIMPLIFY(${1:geography}, ${2:tolerance_meters})"
+    },
+    "ST_SNAPTOGRID()": {
+      "prefix": "st_snaptogrid",
+      "body": "ST_SNAPTOGRID(${1:geography_expression}, ${2:grid_size})"
+    },
+    "ST_TOUCHES()": {
+      "prefix": "st_touches",
+      "body": "ST_TOUCHES(${1:geography_1}, ${2:geography_2})"
+    },
+    "ST_UNION()": {
+      "prefix": "st_union",
+      "body": "ST_UNION(${1:geography_1, geography_2 | array_of_geography})"
+    },
     "ST_UNION_AGG()": {
-      "prefix": "stunionagg",
+      "prefix": "st_union_agg",
       "body": "ST_UNION_AGG(${1:geography})"
     },
+    "ST_WITHIN()": {
+      "prefix": "st_within",
+      "body": "ST_WITHIN(${1:geography_1}, ${2:geography_2})"
+    },
+    "ST_X()": {
+      "prefix": "st_x",
+      "body": "ST_X(${1:geography_expression})"
+    },
+    "ST_Y()": {
+      "prefix": "st_y",
+      "body": "ST_Y(${1:geography_expression})"
+    },
+    // AEAD encryption functions
     "KEYS.NEW_KEYSET": {
       "prefix": "keysnew_keyset",
       "body": "KEYS.NEW_KEYSET(${1:key_type})"
@@ -2091,151 +2409,156 @@
       "prefix": "keysrotate_keyset",
       "body": "KEYS.ROTATE_KEYSET(${1:keyset}, ${2:key_type})"
     },
+    "EXTERNAL_QUERY()": {
+      "prefix": "external_query",
+      "body": "EXTERNAL_QUERY(${1:connection_id}, ${2:external_database_query}${3:[, options]})",
+      "description": "Executes the query in Cloud SQL and returns results as a temporary table."
+    },
     // INFORMATION_SCHEMA - Dataset metadata
     "INFORMATION_SCHEMA.SCHEMATA": {
-      "prefix": "infoschemata",
+      "prefix": "info schemata",
       "body": "INFORMATION_SCHEMA.SCHEMATA",
       "description": "Results contain one row for each dataset in a project to which the current user has access."
     },
     "INFORMATION_SCHEMA.SCHEMATA_OPTIONS": {
-      "prefix": "infoschemataoptions",
+      "prefix": "info schemataoptions",
       "body": "INFORMATION_SCHEMA.SCHEMATA_OPTIONS",
       "description": "Results contain one row for each dataset in a project to which the current user has access."
     },
     // INFORMATION_SCHEMA - Table metadata
     "INFORMATION_SCHEMA.TABLES": {
-      "prefix": "infotables",
+      "prefix": "info tables",
       "body": "INFORMATION_SCHEMA.TABLES",
       "description": "Results contain one row for each table or view in a dataset."
     },
     "INFORMATION_SCHEMA.TABLE_OPTIONS": {
-      "prefix": "infotableoptions",
+      "prefix": "info tableoptions",
       "body": "INFORMATION_SCHEMA.TABLE_OPTIONS",
       "description": "Results contain one row for each table or view in a dataset."
     },
     "INFORMATION_SCHEMA.COLUMNS": {
-      "prefix": "infocolumns",
+      "prefix": "info columns",
       "body": "INFORMATION_SCHEMA.COLUMNS",
       "description": "Results contain one row for each column (field) in a table."
     },
     "INFORMATION_SCHEMA.COLUMN_FIELD_PATHS": {
-      "prefix": "infocolumnfieldpaths",
+      "prefix": "info columnfieldpaths",
       "body": "INFORMATION_SCHEMA.COLUMN_FIELD_PATHS",
       "description": "Results contain one row for each column nested within a RECORD (or STRUCT) column."
     },
     "INFORMATION_SCHEMA.PARTITIONS": {
-      "prefix": "infopartitions",
+      "prefix": "info partitions",
       "body": "INFORMATION_SCHEMA.PARTITIONS",
       "description": "Results contain one row for each partition."
     },
     // INFORMATION_SCHEMA - View metadata
     "INFORMATION_SCHEMA.VIEWS": {
-      "prefix": "infoviews",
+      "prefix": "info views",
       "body": "INFORMATION_SCHEMA.VIEWS",
       "description": "Results contain one row for each view in a dataset."
     },
     // INFORMATION_SCHEMA - Job metadata
     "INFORMATION_SCHEMA.JOBS_BY_USER": {
-      "prefix": "infojobsbyuser",
+      "prefix": "info jobsbyuser",
       "body": "INFORMATION_SCHEMA.JOBS_BY_USER",
       "description": "Returns only the jobs submitted by the current user in the current project."
     },
     "INFORMATION_SCHEMA.JOBS_BY_PROJECT": {
-      "prefix": "infojobsbyproject",
+      "prefix": "info jobsbyproject",
       "body": "INFORMATION_SCHEMA.JOBS_BY_PROJECT",
       "description": "Returns all jobs submitted in the current project."
     },
     "INFORMATION_SCHEMA.JOBS_BY_FOLDER": {
-      "prefix": "infojobsbyfolder",
+      "prefix": "info jobsbyfolder",
       "body": "INFORMATION_SCHEMA.JOBS_BY_FOLDER",
       "description": "Returns returns all jobs submitted in the parent folder of the current project, including the jobs in subfolders under it."
     },
     "INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION": {
-      "prefix": "infojobsbyorganization",
+      "prefix": "info jobsbyorganization",
       "body": "INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION",
       "description": "Returns all jobs submitted in the organization that is associated with the current project."
     },
     // INFORMATION_SCHEMA - Job metadata by timeslice
     "INFORMATION_SCHEMA.JOBS_TIMELINE_BY_USER": {
-      "prefix": "infojobstimelinebyuser",
+      "prefix": "info jobstimelinebyuser",
       "body": "INFORMATION_SCHEMA.JOBS_TIMELINE_BY_USER",
       "description": "Returns only the jobs submitted by the current user in the current project."
     },
     "INFORMATION_SCHEMA.JOBS_TIMELINE_BY_PROJECT": {
-      "prefix": "infojobstimelinebyproject",
+      "prefix": "info jobstimelinebyproject",
       "body": "INFORMATION_SCHEMA.JOBS_TIMELINE_BY_PROJECT",
       "description": "Returns all jobs submitted in the current project."
     },
     "INFORMATION_SCHEMA.JOBS_TIMELINE_BY_FOLDER": {
-      "prefix": "infojobstimelinebyfolder",
+      "prefix": "info jobstimelinebyfolder",
       "body": "INFORMATION_SCHEMA.JOBS_TIMELINE_BY_FOLDER",
       "description": "Returns all jobs submitted in the parent folder of the current project, including the jobs in subfolders under it."
     },
     "INFORMATION_SCHEMA.JOBS_TIMELINE_BY_ORGANIZATION": {
-      "prefix": "infojobstimelinebyorganization",
+      "prefix": "info jobstimelinebyorganization",
       "body": "INFORMATION_SCHEMA.JOBS_TIMELINE_BY_ORGANIZATION",
       "description": "Returns all jobs submitted in the parent folder of the current project, including the jobs in subfolders under it."
     },
     // INFORMATION_SCHEMA - Reservations metadata
     "INFORMATION_SCHEMA.RESERVATION_CHANGES_BY_PROJECT": {
-      "prefix": "inforeservationchangesbyproject",
+      "prefix": "info reservationchangesbyproject",
       "body": "INFORMATION_SCHEMA.RESERVATION_CHANGES_BY_PROJECT",
       "description": "Contains a list of all changes to reservations within the administration project. Each row represents a change to a single reservation."
     },
     "INFORMATION_SCHEMA.RESERVATIONS_BY_PROJECT": {
-      "prefix": "inforeservationsbyproject",
+      "prefix": "info reservationsbyproject",
       "body": "INFORMATION_SCHEMA.RESERVATIONS_BY_PROJECT",
       "description": "Contains a list of all current reservations within the administration project. Each row represents a single, current reservation. A current reservation is a reservation that has not been deleted."
     },
     "INFORMATION_SCHEMA.CAPACITY_COMMITMENT_CHANGES_BY_PROJECT": {
-      "prefix": "infocapacitycommitmentchangesby_project",
+      "prefix": "info capacitycommitmentchangesby_project",
       "body": "INFORMATION_SCHEMA.CAPACITY_COMMITMENT_CHANGES_BY_PROJECT",
       "description": "Contains a list of all changes to capacity commitments within the administration project. Each row represents a single change to a single capacity commitment."
     },
     "INFORMATION_SCHEMA.CAPACITY_COMMITMENTS_BY_PROJECT": {
-      "prefix": "infocapacitycommitmentsbyproject",
+      "prefix": "info capacitycommitmentsbyproject",
       "body": "INFORMATION_SCHEMA.CAPACITY_COMMITMENTS_BY_PROJECT",
       "description": "Contains a list of all current capacity commitments within the administration project. Each row represents a single, current capacity commitment. A current capacity commitment is either pending or active and has not been deleted."
     },
     "INFORMATION_SCHEMA.ASSIGNMENT_CHANGES_BY_PROJECT": {
-      "prefix": "infoassignmentchangesbyproject",
+      "prefix": "info assignmentchangesbyproject",
       "body": "INFORMATION_SCHEMA.ASSIGNMENT_CHANGES_BY_PROJECT",
       "description": "Contains a list of all changes to assignments within the administration project. Each row represents a single change to a single assignment."
     },
     "INFORMATION_SCHEMA.ASSIGNMENTS_BY_PROJECT": {
-      "prefix": "infoassignmentsbyproject",
+      "prefix": "info assignmentsbyproject",
       "body": "INFORMATION_SCHEMA.ASSIGNMENTS_BY_PROJECT",
       "description": "Contains a list of all current assignments within the administration project. Each row represents a single, current assignment. A current assignment is either pending or active and has not been deleted."
     },
     // INFORMATION_SCHEMA - Routine metadata
     "INFORMATION_SCHEMA.ROUTINES": {
-      "prefix": "inforoutines",
+      "prefix": "info routines",
       "body": "INFORMATION_SCHEMA.ROUTINES",
       "description": "Contains "
     },
     "INFORMATION_SCHEMA.ROUTINE_OPTIONS": {
-      "prefix": "inforoutineoptions",
+      "prefix": "info routineoptions",
       "body": "INFORMATION_SCHEMA.ROUTINE_OPTIONS",
       "description": "Contains "
     },
     "INFORMATION_SCHEMA.PARAMETERS": {
-      "prefix": "infoparameters",
+      "prefix": "info parameters",
       "body": "INFORMATION_SCHEMA.PARAMETERS",
       "description": "Contains "
     },
     // INFORMATION_SCHEMA - Streaming metadata
     "INFORMATION_SCHEMA.STREAMING_TIMELINE_BY_PROJECT": {
-      "prefix": "infostreamingtimelinebyproject",
+      "prefix": "info streamingtimelinebyproject",
       "body": "INFORMATION_SCHEMA.STREAMING_TIMELINE_BY_PROJECT",
       "description": "Contains per-minute aggregated streaming statistics for the current project."
     },
     "INFORMATION_SCHEMA.STREAMING_TIMELINE_BY_FOLDER": {
-      "prefix": "infostreamingtimelinebyfolder",
+      "prefix": "info streamingtimelinebyfolder",
       "body": "INFORMATION_SCHEMA.STREAMING_TIMELINE_BY_FOLDER",
       "description": "Contains per-minute aggregated streaming statistics for the parent folder of the current project, including its subfolders."
     },
     "INFORMATION_SCHEMA.STREAMING_TIMELINE_BY_ORGANIZATION": {
-      "prefix": "infostreamingtimelinebyorganization",
+      "prefix": "info streamingtimelinebyorganization",
       "body": "INFORMATION_SCHEMA.STREAMING_TIMELINE_BY_ORGANIZATION",
       "description": "Contains per-minute aggregated streaming statistics for the whole organization associated with the current project."
     },

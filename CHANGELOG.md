@@ -5,6 +5,562 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.6.0] - 2021-05-16
+### Added
+- Added supports new **Data types** syntax.
+  - `GEOGRAPHY`
+  - `DECIMAL`
+  - `BIGNUMERIC`
+  - `BIGDECIMAL`
+- Added supports new **JSON** functions.
+  - `JSON_QUERY`
+    - Prefix  
+      `json_query`
+    - Body
+      ```sql
+      JSON_QUERY(${1:"json_string_expr"}, ${2:"json_path"})
+      ```
+    - Description
+      ```
+      Extracts a JSON values.
+      ```
+  - `JSON_VALUE`
+    - Prefix  
+      `json_value`
+    - Body
+      ```sql
+      JSON_VALUE(${1:"json_string_expr"}, ${2:"json_path"})
+      ```
+    - Description
+      ```
+      Extracts a scalar value.
+      ```
+  - `JSON_EXTRACT_ARRAY`
+    - Prefix  
+      `json_extract_array`
+    - Body
+      ```sql
+      JSON_EXTRACT_ARRAY(${1:'json_string_expr'}, ${2:'json_path'})
+      ```
+    - Description
+      ```
+      Extracts an array of JSON values. (Legacy JSON function, recommend using `JSON_QUERY_ARRAY`)
+      ```
+  - `JSON_QUERY_ARRAY`
+    - Prefix  
+      `json_query_array`
+    - Body
+      ```sql
+      JSON_QUERY_ARRAY(${1:"json_string_expr"}, ${2:"json_path"})
+      ```
+    - Description
+      ```
+      Extracts an array of JSON values.
+      ```
+  - `JSON_EXTRACT_STRING_ARRAY`
+    - Prefix  
+      `json_extract_string_array`
+    - Body
+      ```sql
+      JSON_EXTRACT_STRING_ARRAY(${1:'json_string_expr'}, ${2:'json_path'})
+      ```
+    - Description
+      ```
+      Extracts an array of scalar values. (Legacy JSON function, recommend using `JSON_VALUE_ARRAY`)
+      ```
+  - `JSON_VALUE_ARRAY`
+    - Prefix  
+      `json_value_array`
+    - Body
+      ```sql
+      JSON_VALUE_ARRAY(${1:"json_string_expr"}, ${2:"json_path"})
+      ```
+    - Description
+      ```
+      Extracts an array of scalar values.
+      ```
+- Added supports new **Scripting**.
+  - `EXECUTE IMMEDIATE`
+    - Prefix  
+      `execute immediate`
+    - Body
+      ```sql
+      EXECUTE IMMEDIATE
+        ${1:"sql_expression @parameter_name"}
+        ${2:[INTO variable]}
+        ${3:[USING value AS parameter_name]};
+      ```
+    - Description
+      ```
+      Executes a dynamic SQL statement on the fly.
+      ```
+  - `IF ... ELSEIF ... ELSE`
+    - Prefix  
+      `if elseif else`
+    - Body
+      ```sql
+      IF ${1:condition} THEN
+        ${2:statements}
+      ELSEIF ${3:condition} THEN
+        ${4:statements}
+      ELSE
+        ${5:statements}
+      END IF;
+      ```
+  - `RAISE`
+    - Prefix  
+      `raise`
+    - Body
+      ```sql
+      RAISE ${1:[USING MESSAGE = "message"]};
+      ```
+    - Description
+      ```
+      Raises an error.
+      ```
+- Added supports new **Geography** functions.
+  - `ST_GEOGFROMWKB`
+    - Prefix  
+      `st_geogfromwkb`
+    - Body
+      ```sql
+      ST_GEOGFROMWKB(${1:wkb_bytes_expression|wkb_hex_string_expression})
+      ```
+  - `ST_GEOGPOINTFROMGEOHASH`
+    - Prefix  
+      `st_geogpointfromgeohash`
+    - Body
+      ```sql
+      ST_GEOGPOINTFROMGEOHASH(${1:geohash})
+      ```
+  - `ST_ASBINARY`
+    - Prefix  
+      `st_asbinary`
+    - Body
+      ```sql
+      ST_ASBINARY(${1:geography_expression})
+      ```
+  - `ST_GEOHASH`
+    - Prefix  
+      `st_geohash`
+    - Body
+      ```sql
+      ST_GEOHASH(${1:geography_expression}, ${2:maxchars})
+      ```
+  - `ST_CENTROID_AGG`
+    - Prefix  
+      `st_centroid_agg`
+    - Body
+      ```sql
+      ST_CENTROID_AGG(${1:geography})
+      ```
+  - `ST_CONVEXHULL`
+    - Prefix  
+      `st_convexhull`
+    - Body
+      ```sql
+      ST_CONVEXHULL(${1:geography_expression})
+      ```
+  - `ST_DUMP`
+    - Prefix  
+      `st_dump`
+    - Body
+      ```sql
+      ST_DUMP(${1:geography}${2:[, dimension]})
+      ```
+  - `ST_SIMPLIFY`
+    - Prefix  
+      `st_simplify`
+    - Body
+      ```sql
+      ST_SIMPLIFY(${1:geography}, ${2:tolerance_meters})
+      ```
+  - `ST_CLUSTERDBSCAN`
+    - Prefix  
+      `st_clusterdbscan`
+    - Body
+      ```sql
+      ST_CLUSTERDBSCAN(${1:geography_column}, ${2:epsilon}, ${3:minimum_geographies}) OVER (${4:...})
+      ```
+  - `ST_NPOINTS`
+    - Prefix  
+      `st_npoints`
+    - Body
+      ```sql
+      ST_NPOINTS(${1:geography_expression})
+      ```
+  - `ST_X`
+    - Prefix  
+      `st_x`
+    - Body
+      ```sql
+      ST_X(${1:geography_expression})
+      ```
+  - `ST_Y`
+    - Prefix  
+      `st_y`
+    - Body
+      ```sql
+      ST_Y(${1:geography_expression})
+      ```
+  - `ST_GEOGFROMTEXT`
+    - Prefix  
+      `st_geogfromtext`
+    - Body
+      ```sql
+      ST_GEOGFROMTEXT(${1:wkt_string}${2:[, oriented => boolean_constant_1]}${3:[, planar => boolean_constant_2]}${4:[, make_valid => boolean_constant_3]})
+      ```
+- Added supports **Debugging statements** syntax.
+  - `ASSERT`
+    - Prefix  
+      `assert`
+    - Body
+      ```sql
+      ASSERT ${1:expression}${2: [AS "description"]}
+      ```
+- Added supports `BQ.JOBS.CANCEL` snippets.
+  - `BQ.JOBS.CANCEL`
+    - Prefix  
+    `call bq jobs cancel`
+    - Body
+      ```sql
+      CALL BQ.JOBS.CANCEL(${1:"project-id.job_id"});
+      ```
+    - Description
+      ```
+      Canceling a job.
+      ```
+- Added `EXPORT DATA` snippets.
+  - `EXPORT DATA`
+    - Prefix  
+      `export data`
+    - Body
+      ```sql
+      EXPORT DATA
+      OPTIONS (
+        ${1:format = "AVRO"|"CSV"|"JSON"|"PARQUET",}
+        ${2:compression = "GZIP"|"DEFLATE"|"SNAPPY",}
+        ${3:field_delimiter = ","|"\t"|"other",}
+        ${4:header = false|true,}
+        ${5:overwrite = false|true,}
+        ${6:uri = "gs://bucket/path/file_*.csv.gz"}
+      ) AS
+      query_statement
+      ```
+- Added supports new **DML** syntax.
+  - `TRUNCATE TABLE`
+    - Prefix  
+      `truncate table`
+    - Body
+      ```sql
+      TRUNCATE TABLE `${1:project}.${2:dataset}.${3:table}`
+      ```
+- Added supports new **DDL** syntax.
+  - `ALTER COLUMN DROP NOT NULL`
+    - Prefix  
+      `alter column drop not null`
+    - Body
+      ```sql
+      ALTER TABLE ${1:[IF EXISTS]} `${2:project}.${3:dataset}.${4:table}`
+        ALTER COLUMN ${5:[IF EXISTS]} ${6:column_name} DROP NOT NULL
+      ```
+- Added supports **Federated query** syntax.
+  - `EXTERNAL_QUERY`
+    - Prefix  
+      `external_query`
+    - Body
+      ```sql
+      EXTERNAL_QUERY(${1:connection_id}, ${2:external_database_query}${3:[, options]})
+      ```
+    - Description
+      ```
+      Executes the query in Cloud SQL and returns results as a temporary table.
+      ```
+- Added supports new **Query** syntax.
+  - `TABLESAMPLE`
+    - Prefix  
+      `"tablesample", "sampling"`
+    - Body
+      ```sql
+      SELECT
+        ${1:column}
+      FROM `${2:project}.${3:dataset}.${4:table}`
+        TABLESAMPLE SYSTEM (${5:value} PERCENT)
+      ```
+    - Description
+      ```
+      Table sampling lets you query random subsets of data from large BigQuery tables.
+      ```
+  - `FOR SYSTEM_TIME AS OF`
+    - Prefix  
+      `"system_time", "time travel"`
+    - Body
+      ```sql
+      SELECT
+        ${1:column}
+      FROM `${2:project}.${3:dataset}.${4:table}`
+        FOR SYSTEM_TIME AS OF TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${5:1} HOUR)
+      ```
+    - Description
+      ```
+      Time travel to access data at any point within the last 7 days.
+      ```
+  - `PIVOT`
+    - Prefix  
+      `pivot`
+    - Body
+      ```sql
+      SELECT
+        *
+      FROM `${1:project}.${2:dataset}.${3:table}`
+        PIVOT(
+          ${4:aggregate_function(aggregate_column)}
+          FOR ${5:input_column}
+          IN (${6:pivot_column, ...})
+        )
+      ```
+  - `UNPIVOT`
+    - Prefix  
+      `unpivot`
+    - Body
+      ```sql
+      SELECT
+        *
+      FROM `${1:project}.${2:dataset}.${3:table}`
+        UNPIVOT${4:[ INCLUDE NULLS|EXCLUDE NULLS ]}(
+          ${5:value_column_name}
+          FOR ${6:dimension_column_name}
+          IN (${7:unpivot_column, ...})
+        )
+      ```
+- Added supports new **String** functions.
+  - `ASCII`
+    - Prefix  
+      `ascii`
+    - Body
+      ```sql
+      ASCII(${1:value})
+      ```
+    - Description
+      ```
+      Returns the ASCII code for the first character or byte in value.
+      ```
+  - `CHR`
+    - Prefix  
+      `chr`
+    - Body
+      ```sql
+      CHR(${1:value})
+      ```
+    - Description
+      ```
+      Takes a Unicode code point and returns the character that matches the code point.
+      ```
+  - `INITCAP`
+    - Prefix  
+      `initcap`
+    - Body
+      ```sql
+      INITCAP(${1:value}${2:[, delimiters]})
+      ```
+    - Description
+      ```
+      Returns it with the first character in each word in uppercase and all other characters in lowercase.
+      ```
+  - `INSTR`
+    - Prefix  
+      `instr`
+    - Body
+      ```sql
+      INSTR(${1:source_value}, ${2:search_value}${3:[, position[, occurrence]]})
+      ```
+    - Description
+      ```
+      Returns the lowest 1-based index of search_value in source_value.
+      ```
+  - `LEFT`
+    - Prefix  
+      `left`
+    - Body
+      ```sql
+      LEFT(${1:value}, ${2:length})
+      ```
+    - Description
+      ```
+      Return the specified leftmost number of characters.
+      ```
+  - `OCTET_LENGTH`
+    - Prefix  
+      `octet_length`
+    - Body
+      ```sql
+      OCTET_LENGTH(${1:value})
+      ```
+    - Description
+      ```
+      Alias for BYTE_LENGTH.
+      ```
+  - `REGEXP_INSTR`
+    - Prefix  
+      `regexp_instr`
+    - Body
+      ```sql
+      REGEXP_INSTR(${1:source_value}, r\"${2:regex}\"${3:[, position[, occurrence, [occurrence_position]]]})
+      ```
+    - Description
+      ```
+      Returns the lowest 1-based index of a regular expression, regexp, in source_value.
+      ```
+  - `REGEXP_SUBSTR`
+    - Prefix  
+      `regexp_substr`
+    - Body
+      ```sql
+      REGEXP_SUBSTR(${1:value}, r\"${2:regex}\"${3:[, position[, occurrence]]})
+      ```
+    - Description
+      ```
+      Synonym for REGEXP_EXTRACT.
+      ```
+  - `RIGHT`
+    - Prefix  
+      `right`
+    - Body
+      ```sql
+      RIGHT(${1:value}, ${2:length})
+      ```
+    - Description
+      ```
+      Return the specified rightmost number of characters.
+      ```
+  - `SOUNDEX`
+    - Prefix  
+      `soundex`
+    - Body
+      ```sql
+      SOUNDEX(${1:value})
+      ```
+    - Description
+      ```
+      Returns a STRING that represents the Soundex code for value.
+      ```
+  - `SUBSTRING`
+    - Prefix  
+      `substring`
+    - Body
+      ```sql
+      SUBSTRING(${1:value}, ${2:position}${3:[, length]})",
+      ```
+    - Description
+      ```
+      Returns a substring of the supplied `value`. (Alias for SUBSTR)
+      ```
+  - `TRANSLATE`
+    - Prefix  
+      `translate`
+    - Body
+      ```sql
+      TRANSLATE(${1:expression}, ${2:source_characters}, ${3:target_characters})
+      ```
+    - Description
+      ```
+      In `expression`, replaces each character in `source_characters` with the corresponding character in `target_characters`.
+      ```
+  - `UNICODE`
+    - Prefix  
+      `unicode`
+    - Body
+      ```sql
+      UNICODE(${1:value})
+      ```
+    - Description
+      ```
+      Returns the Unicode code point for the first character in value.
+      ```
+- Added supports new **Date** functions.
+  - `LAST_DAY`
+    - Prefix  
+      `last_day`
+    - Body
+      ```sql
+      LAST_DAY(${1:date_expression}${2:[, date_part]})
+      ```
+    - Description
+      ```
+      description": "Returns the last day from a date expression.
+      ```
+
+### Changed
+- Changed to **legacy** function.
+  - `JSON_EXTRACT`
+  - `JSON_EXTRACT_SCALAR`
+  - `JSON_EXTRACT_ARRAY`
+  - `JSON_EXTRACT_STRING_ARRAY`
+- Added supports new **Scripting**.
+  - `BEGIN ... END` added `EXCEPTION`
+    - Prefix  
+      `begin/end`
+    - Body
+      ```sql
+      BEGIN
+        ${1:statements}
+      EXCEPTION WHEN ERROR THEN
+        ${2:statements}
+        ${3:[# Get error informations
+        SELECT
+          @@error.message,
+          @@error.stack_trace,
+          @@error.statement_text,
+          @@error.formatted_stack_trace;]}
+      END;
+      ```
+- Added supports new **DDL** syntax.
+  - `CREATE VIEW`
+    - Prefix  
+      `create view`
+    - Body
+      ```sql
+      CREATE ${1:[OR REPLACE] }VIEW ${2:[IF NOT EXISTS] }`${4:project}.${5:dataset}.${6:view}`
+      ${7:[(
+        column_name_list
+      )]}
+      ${8:[OPTIONS (
+        description = "description",
+        expiration_timestamp = TIMESTAMP "YYYY-MM-DD HH:MI:SS UTC",
+        friendly_name = "friendly_name",
+        labels = [("key", "value")]
+      )]}
+      AS
+      SELECT
+        ${9:column}
+      FROM `${10:project}.${11:dataset}.${12:table}`
+      ```
+- Added supports new **Query** syntax.
+  - `ORDER BY`
+    - Prefix  
+      `order by`
+    - Body
+      ```sql
+      ORDER BY
+        ${1:expression} ${2:[ASC|DESC]} ${3:[NULLS FIRST|NULLS LAST]}
+      ```
+- Added supports new **String** functions.
+  - `REGEXP_EXTRACT`
+    - Prefix  
+      `regexp_extract`
+    - Body
+      ```sql
+      REGEXP_EXTRACT(${1:value}, r\"${2:regex}\"${3:[, position[, occurrence]]})",
+      ```
+    - Description
+      ```
+      Returns the first substring in `value` that matches the regular expression, `regex`. Returns NULL if there is no match.
+      ```
+
+### Fixed
+- Miner fixed
+
+
 ## [1.5.0] - 2021-05-09
 ### Added
 - Added new **DDL** statements snippets
@@ -1389,6 +1945,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial release
 
 
+[1.6.0]: https://github.com/shinichi-takii/vscode-language-sql-bigquery/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/shinichi-takii/vscode-language-sql-bigquery/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/shinichi-takii/vscode-language-sql-bigquery/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/shinichi-takii/vscode-language-sql-bigquery/compare/v1.2.0...v1.3.0
