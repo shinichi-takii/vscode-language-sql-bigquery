@@ -38,7 +38,7 @@
           "name": "invalid.illegal.table.delimiter.sql"
         }
       },
-      "match": "(?i:^\\s*(create(?:\\s+or\\s+replace)?(?:\\s+temporary|\\s+temp)?|drop|alter)\\s+(schema|table|view|materialized\\s+view|external\\s+table|model|function|procedure)\\b(?:\\s+(if(?:\\s+not)?\\s+exists)\\b)?)(?:\\s+(`?)((?:(?:[\\w\\-]*(?:\\{+\\s*[\\w\\-]+\\s*\\}+[\\w\\-]*)?)(?:\\.|(\\:)))?(?:(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?)\\.)?(?:[\\w\\{\\}]+|\\{\\{\\s*[\\w]+\\s*\\}\\}))\\4)?",
+      "match": "(?i:^\\s*(create(?:\\s+or\\s+replace)?(?:\\s+temporary|\\s+temp)?|drop|alter)\\s+(schema|table|view|materialized\\s+view|external\\s+table|model|function|procedure|column)\\b(?:\\s+(if(?:\\s+not)?\\s+exists)\\b)?)(?:\\s+(`?)((?:(?:[\\w\\-]*(?:\\{+\\s*[\\w\\-]+\\s*\\}+[\\w\\-]*)?)(?:\\.|(\\:)))?(?:(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?)\\.)?(?:[\\w\\{\\}]+|\\{\\{\\s*[\\w]+\\s*\\}\\}))\\4)?",
       "name": "meta.create.sql"
     },
     {
@@ -56,7 +56,7 @@
           "name": "variable.parameter.table.partition_decorator.sql"
         }
       },
-      "match": "(?i:^\\b((?:insert|merge)(?:\\s+into)?)(?:\\s+(`?)((?:(?:[\\w\\-]*(?:\\{+\\s*[\\w\\-]+\\s*\\}+[\\w\\-]*)?)(?:\\.|(\\:)))?(?:(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?)\\.)?(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?))(\\*|\\$\\w+)?\\2)?)",
+      "match": "(?i:^\\b((?:insert|merge)(?:\\s+into)?|truncate\\s+table)(?:\\s+(`?)((?:(?:[\\w\\-]*(?:\\{+\\s*[\\w\\-]+\\s*\\}+[\\w\\-]*)?)(?:\\.|(\\:)))?(?:(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?)\\.)?(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?))(\\*|\\$\\w+)?\\2)?)",
       "name": "meta.create.DML.insert.sql"
     },
     {
@@ -83,7 +83,7 @@
           "name": "variable.parameter.table.partition_decorator.legacy.sql"
         }
       },
-      "match": "(?i)(from|join|delete\\s+from|delete(?!\\s+from)|update|using)\\s+((`?)((?:(?:[\\w\\-]*(?:\\{+\\s*[\\w\\-]+\\s*\\}+[\\w\\-]*)?)(?:\\.|(\\:)))?(?:(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?)\\.)?(?:INFORMATION_SCHEMA\\.\\w+|\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?))(\\*|\\$\\w+)?\\3?|\\[((?:(?:[\\w\\-]*(?:\\{+\\s*[\\w\\-]+\\s*\\}+[\\w\\-]*)?)(?:\\:|(\\.)))?(?:(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?)\\.)?(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?))(\\*|\\$\\w+)?\\])",
+      "match": "(?i)(from|join|delete\\s+from|delete(?!\\s+from)|update|using(?!\\s+message))\\s+((`?)((?:(?:[\\w\\-]*(?:\\{+\\s*[\\w\\-]+\\s*\\}+[\\w\\-]*)?)(?:\\.|(\\:)))?(?:(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?)\\.)?(?:INFORMATION_SCHEMA\\.\\w+|\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?))(\\*|\\$\\w+)?\\3?|\\[((?:(?:[\\w\\-]*(?:\\{+\\s*[\\w\\-]+\\s*\\}+[\\w\\-]*)?)(?:\\:|(\\.)))?(?:(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?)\\.)?(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?))(\\*|\\$\\w+)?\\])",
       "name": "meta.create.from.sql"
     },
     {
@@ -138,7 +138,7 @@
       "name": "meta.create.DML.merge.sql"
     },
     {
-      "match": "(?i)\\b(array|boolean|bytes|date(?!\\s*\\()|datetime(?!\\s*\\()|numeric|float|float64|int64|integer|bool|record|string(?!\\s*\\()|struct|time(?!\\s*\\(|\\s+as\\s+of|\\s+zone)|timestamp(?!\\s*\\())\\b",
+      "match": "(?i)\\b(array|boolean|bytes|date(?!\\s*\\()|datetime(?!\\s*\\()|geography|numeric|decimal|bignumeric|bigdecimal|float|float64|int64|integer|bool|record|string(?!\\s*\\()|struct|time(?!\\s*\\(|\\s+as\\s+of|\\s+zone)|timestamp(?!\\s*\\())\\b",
       "name": "storage.type.sql"
     },
     {
@@ -186,7 +186,7 @@
       "name": "keyword.other.select.sql"
     },
     {
-      "match": "(?i:\\b(union|intersect|for|system|time|of|offset)\\b)",
+      "match": "(?i:\\b(union|intersect|for|system|time|of|offset|system_time|tablesample|percent)\\b)",
       "name": "keyword.other.select.set_op.sql"
     },
     {
@@ -206,15 +206,19 @@
       "name": "keyword.other.DDL.sql"
     },
     {
-      "match": "(?i:\\b(merge|matched|default)\\b)",
+      "match": "(?i:\\b(merge|matched|default|truncate)\\b)",
       "name": "keyword.other.DML.merge.sql"
     },
     {
-      "match": "(?i:\\b(over|ignore|respect|nulls|interval|at|zone|at\\s+time\\s+zone)\\b)",
+      "match": "(?i:\\b(assert|export\\s+data|pivot|unpivot|qualify|include|exclude)\\b)",
+      "name": "keyword.other.statement.sql"
+    },
+    {
+      "match": "(?i:\\b(over|ignore|respect|nulls|first|last|interval|at|zone|at\\s+time\\s+zone)\\b)",
       "name": "keyword.other.function.sql"
     },
     {
-      "match": "(?i:\\b(procedure|begin|out|inout|call|declare|if|end\\s+if|loop|while|do|break|leave|continue|iterate|return)\\b)",
+      "match": "(?i:\\b(procedure|begin|exception|error[^\\.\\(]|out|inout|call|declare|if|elseif|end\\s+if|loop|while|do|break|leave|continue|iterate|return|execute|immediate|raise|message)\\b)",
       "name": "keyword.other.procedure.sql"
     },
     {
@@ -551,7 +555,7 @@
           "name": "support.function.scalar.sql"
         },
         {
-          "match": "(?i)\\b(DATE|DATETIME|TIME(STAMP)?|STRING|(DATE|DATETIME|TIME(STAMP)?)_(ADD|SUB|DIFF|TRUNC)|DATE_FROM_UNIX_DATE|(FORMAT|PARSE)_(DATE|DATETIME|TIME(STAMP)?)|UNIX_(DATE|SECONDS|MILLIS|MICROS)|TIMESTAMP_(SECONDS|MILLIS|MICROS))(?=\\s*\\()",
+          "match": "(?i)\\b(DATE|DATETIME|TIME(STAMP)?|STRING|(DATE|DATETIME|TIME(STAMP)?)_(ADD|SUB|DIFF|TRUNC)|DATE_FROM_UNIX_DATE|(FORMAT|PARSE)_(DATE|DATETIME|TIME(STAMP)?)|UNIX_(DATE|SECONDS|MILLIS|MICROS)|TIMESTAMP_(SECONDS|MILLIS|MICROS)|LAST_DAY)(?=\\s*\\()",
           "name": "support.function.date.sql"
         },
         {
@@ -571,16 +575,24 @@
           "name": "support.function.aggregate.sql.array"
         },
         {
-          "match": "(?i)\\b(BYTE_LENGTH|CHAR_LENGTH|CHARACTER_LENGTH|CODE_POINTS_TO_(BYTES|STRING)|CONCAT|BYTE_LENGTH|CHAR_LENGTH|CHARACTER_LENGTH|CONCAT|ENDS_WITH|FORMAT|FROM_(BASE32|BASE64|HEX)|LENGTH|LPAD|LOWER|LTRIM|NORMALIZE|NORMALIZE_AND_CASEFOLD|REGEXP_(CONTAINS|EXTRACT|EXTRACT_ALL|REPLACE)|REPLACE(?!\\]|\\s+(schema|table|view|materialized(\\s+view)?|external\\s+table|model|function|procedure))|REPEAT|REVERSE|RPAD|RTRIM|SAFE_CONVERT_BYTES_TO_STRING|SPLIT|STARTS_WITH|STRPOS|SUBSTR|TO_(BASE32|BASE64|CODE_POINTS|HEX)|TRIM|UPPER)\\b",
+          "match": "(?i)\\b(ASCII|(BYTE|CHAR|CHARACTER|OCTET)_LENGTH|CHR|CODE_POINTS_TO_(BYTES|STRING)|CONCAT|BYTE_LENGTH|CHAR_LENGTH|CHARACTER_LENGTH|CONCAT|ENDS_WITH|FORMAT|FROM_(BASE32|BASE64|HEX)|INITCAP|INSTR|LENGTH|LPAD|LOWER|LTRIM|NORMALIZE|NORMALIZE_AND_CASEFOLD|REGEXP_(CONTAINS|EXTRACT|EXTRACT_ALL|INSTR|REPLACE|SUBSTR)|REPLACE(?!\\]|\\s+(schema|table|view|materialized(\\s+view)?|external\\s+table|model|function|procedure))|REPEAT|REVERSE|RPAD|RTRIM|SAFE_CONVERT_BYTES_TO_STRING|SOUNDEX|SPLIT|STARTS_WITH|STRPOS|SUBSTR|SUBSTRING|TO_(BASE32|BASE64|CODE_POINTS|HEX)|TRANSLATE|TRIM|UNICODE|UPPER)\\b",
           "name": "support.function.string.sql"
+        },
+        {
+          "match": "(?i)\\b(LEFT|RIGHT)(?=\\s*\\()",
+          "name": "support.function.string.param.sql"
         },
         {
           "match": "(?i)\\b(FARM_FINGERPRINT|MD5|SHA(1|256|512))\\b",
           "name": "support.function.string.sql.hash"
         },
         {
-          "match": "(?i)\\b(JSON_EXTRACT|JSON_EXTRACT_SCALAR|TO_JSON_STRING)\\b",
-          "name": "support.function.string.sql.json"
+          "match": "(?i)\\b(JSON_QUERY|JSON_VALUE|JSON_(QUERY|VALUE)_ARRAY|TO_JSON_STRING)\\b",
+          "name": "support.function.json.sql"
+        },
+        {
+          "match": "(?i)\\b(JSON_EXTRACT|JSON_EXTRACT_(SCALAR|ARRAY|STRING_ARRAY))\\b",
+          "name": "invalid.deprecated.legacy.function.sql.json"
         },
         {
           "match": "(?i)\\b(ROW_NUMBER|RANK|DENSE_RANK|PERCENT_RANK|CUME_DIST|NTILE|LAG|LEAD|(FIRST|LAST|NTH)_VALUE|OVER|PERCENTILE_(CONT|DISC)|BIT_COUNT)\\b",
@@ -603,7 +615,7 @@
           "name": "support.function.ml.sql"
         },
         {
-          "match": "(?i)\\b(ST_(GEOGPOINT|MAKELINE|MAKEPOLYGON|MAKEPOLYGONORIENTED|GEOGFROMGEOJSON|GEOGFROMTEXT|ASGEOJSON|ASTEXT|BOUNDARY|CENTROID|CLOSESTPOINT|DIFFERENCE|INTERSECTION|SNAPTOGRID|UNION|CONTAINS|COVEREDBY|COVERS|DISJOINT|DWITHIN|EQUALS|INTERSECTS|INTERSECTSBOX|TOUCHES|WITHIN|ISEMPTY|ISCOLLECTION|DIMENSION|NUMPOINTS|AREA|DISTANCE|LENGTH|MAXDISTANCE|PERIMETER|UNION_AGG))\\b",
+          "match": "(?i)\\b(ST_(AREA|ASBINARY|ASGEOJSON|ASTEXT|BOUNDARY|CENTROID_AGG|CENTROID|CLOSESTPOINT|CLUSTERDBSCAN|CONTAINS|CONVEXHULL|COVEREDBY|COVERS|DIFFERENCE|DIMENSION|DISJOINT|DISTANCE|DUMP|DWITHIN|EQUALS|GEOGFROMGEOJSON|GEOGFROMTEXT|GEOGFROMWKB|GEOGPOINT|GEOGPOINTFROMGEOHASH|GEOHASH|INTERSECTION|INTERSECTS|INTERSECTSBOX|ISCOLLECTION|ISEMPTY|LENGTH|MAKELINE|MAKEPOLYGON|MAKEPOLYGONORIENTED|MAXDISTANCE|NPOINTS|NUMPOINTS|PERIMETER|SIMPLIFY|SNAPTOGRID|TOUCHES|UNION_AGG|UNION|WITHIN|X|Y))\\b",
           "name": "support.function.gis.sql"
         },
         {
@@ -613,6 +625,10 @@
         {
           "match": "(?i)\\b(AEAD\\.(DECRYPT_BYTES|DECRYPT_STRING|ENCRYPT))\\b",
           "name": "support.function.aead.sql"
+        },
+        {
+          "match": "(?i)\\b(EXTERNAL_QUERY)\\b",
+          "name": "support.function.federated.sql"
         },
         {
           "match": "(?i)\\b(EXACT_COUNT_DISTINCT|FIRST|GROUP_CONCAT(_UNQUOTED)?|LAST|NEST|NTH|QUANTILES|TOP|UNIQUE)(?=\\s*\\()",
@@ -641,10 +657,6 @@
         {
           "match": "(?i)\\b(REGEXP_MATCH)\\b",
           "name": "invalid.deprecated.legacy.regexp.sql"
-        },
-        {
-          "match": "(?i)\\b(INSTR|LEFT|RIGHT)(?=\\s*\\()",
-          "name": "invalid.deprecated.legacy.string.sql"
         },
         {
           "match": "(?i)\\bCONTAINS\\b",
