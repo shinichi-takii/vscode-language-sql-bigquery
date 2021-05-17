@@ -633,18 +633,18 @@
       "description": "Executes a dynamic SQL statement on the fly."
     },
     "BEGIN ... END": {
-      "prefix": "begin/end",
+      "prefix": "begin end",
       "body": [
         "BEGIN",
         "\t${1:statements}",
+        "",
         "EXCEPTION WHEN ERROR THEN",
-        "\t${2:statements}",
-        "\t${3:[# Get error informations",
+        "\t${2:# Get error informations",
         "\tSELECT",
         "\t\t@@error.message,",
         "\t\t@@error.stack_trace,",
         "\t\t@@error.statement_text,",
-        "\t\t@@error.formatted_stack_trace;]}",
+        "\t\t@@error.formatted_stack_trace;}",
         "END;"
       ]
     },
