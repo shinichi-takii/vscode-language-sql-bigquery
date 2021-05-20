@@ -5,6 +5,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.7.0] - 2021-05-20
+### Added
+- Added supports `ALTER TABLE RENAME TO` statement snippets.
+  - `ALTER TABLE RENAME TO`
+    - Prefix  
+      `alter table rename`
+    - Body
+      ```sql
+      ALTER TABLE ${1:[IF EXISTS]} `${2:project}.${3:dataset}.${4:table}`
+        RENAME TO ${5:new_table_name}
+      ```
+
+### Fixed
+- Miner fixed
+
+
 ## [1.6.1] - 2021-05-17
 ### Fixed
 - Fixed `BEGIN ... END` snippets prefix
@@ -1953,6 +1969,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial release
 
 
+[1.7.0]: https://github.com/shinichi-takii/vscode-language-sql-bigquery/compare/v1.6.1...v1.7.0
 [1.6.1]: https://github.com/shinichi-takii/vscode-language-sql-bigquery/compare/v1.6.0...v1.6.1
 [1.6.0]: https://github.com/shinichi-takii/vscode-language-sql-bigquery/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/shinichi-takii/vscode-language-sql-bigquery/compare/v1.4.0...v1.5.0

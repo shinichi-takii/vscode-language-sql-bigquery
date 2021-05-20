@@ -202,7 +202,7 @@
       "name": "keyword.other.DML.sql"
     },
     {
-      "match": "(?i:\\b(create(\\s+(temporary|temp))?|drop(\\s+column)?|schema|table|view|materialized(\\s+view)?|external\\s+table|if|not|exists|partition|cluster|options|rows|range|unbounded|preceding|following|current|row|returns|language|deterministic|(\\s*or\\s+replace\\s+)?(function|procedure|model)(\\s*if\\s+not\\s+exists\\s+)?|(add|drop)\\s+column|cascade|restrict)\\b)",
+      "match": "(?i:\\b(create(\\s+(temporary|temp))?|drop(\\s+column)?|schema|table|view|materialized(\\s+view)?|external\\s+table|if|not|exists|partition|cluster|options|rows|range|unbounded|preceding|following|current|row|returns|language|deterministic|(\\s*or\\s+replace\\s+)?(function|procedure|model)(\\s*if\\s+not\\s+exists\\s+)?|(add|drop)\\s+column|cascade|restrict|rename|to)\\b)",
       "name": "keyword.other.DDL.sql"
     },
     {
