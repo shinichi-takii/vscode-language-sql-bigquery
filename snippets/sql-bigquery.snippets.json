@@ -106,10 +106,6 @@
       ],
       "description": "Filters the results of analytic functions."
     },
-    "DISTINCT": {
-      "prefix": "distinct",
-      "body": "DISTINCT"
-    },
     "PARTITION BY": {
       "prefix": "partitionby",
       "body": [
@@ -195,6 +191,19 @@
         "\t\tIN (${7:unpivot_column, ...})",
         "\t)"
       ]
+    },
+    // Keyword
+    "DISTINCT": {
+      "prefix": "distinct",
+      "body": "DISTINCT"
+    },
+    "NULL": {
+      "prefix": "null",
+      "body": "NULL"
+    },
+    "ON": {
+      "prefix": "on",
+      "body": "ON"
     },
     // DML
     "INSERT INTO": {
@@ -537,6 +546,13 @@
         "\tfriendly_name = \"friendly_name\",",
         "\tlabels = [(\"key\", \"value\")]}",
         ")"
+      ]
+    },
+    "ALTER TABLE RENAME TO": {
+      "prefix": "alter table rename",
+      "body": [
+        "ALTER TABLE ${1:[IF EXISTS]} `${2:project}.${3:dataset}.${4:table}`",
+        "\tRENAME TO ${5:new_table_name}"
       ]
     },
     "ALTER TABLE ADD COLUMN": {
