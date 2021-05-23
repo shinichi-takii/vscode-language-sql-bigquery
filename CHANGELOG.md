@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.8.0] - 2021-05-23
 ### Added
-- Add supports new **Geography** functions snippets.
+- Added supports new **Geography** functions snippets.
   - `ST_STARTPOINT`
     - Prefix  
       `st_startpoint`
