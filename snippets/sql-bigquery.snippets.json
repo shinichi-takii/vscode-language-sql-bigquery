@@ -2280,6 +2280,10 @@
       "prefix": "st_dwithin",
       "body": "ST_DWITHIN(${1:geography_1}, ${2:geography_2}, ${3:distance[, spheroid=FALSE]})"
     },
+    "ST_ENDPOINT()": {
+      "prefix": "st_endpoint",
+      "body": "ST_ENDPOINT(${1:linestring_geography})"
+    },
     "ST_EQUALS()": {
       "prefix": "st_equals",
       "body": "ST_EQUALS(${1:geography_1}, ${2:geography_2})"
@@ -2360,6 +2364,10 @@
       "prefix": "st_perimeter",
       "body": "ST_PERIMETER(${1:geography_expression[, spheroid=FALSE]})"
     },
+    "ST_POINTN()": {
+      "prefix": "st_pointn",
+      "body": "ST_POINTN(${1:linestring_geography}, ${2:index})"
+    },
     "ST_SIMPLIFY()": {
       "prefix": "st_simplify",
       "body": "ST_SIMPLIFY(${1:geography}, ${2:tolerance_meters})"
@@ -2367,6 +2375,10 @@
     "ST_SNAPTOGRID()": {
       "prefix": "st_snaptogrid",
       "body": "ST_SNAPTOGRID(${1:geography_expression}, ${2:grid_size})"
+    },
+    "ST_STARTPOINT()": {
+      "prefix": "st_startpoint",
+      "body": "ST_STARTPOINT(${1:linestring_geography})"
     },
     "ST_TOUCHES()": {
       "prefix": "st_touches",
