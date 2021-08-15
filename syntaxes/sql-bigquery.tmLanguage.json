@@ -38,7 +38,7 @@
           "name": "invalid.illegal.table.delimiter.sql"
         }
       },
-      "match": "(?i:^\\s*(create(?:\\s+or\\s+replace)?(?:\\s+temporary|\\s+temp)?|drop|alter)\\s+(schema|table|view|materialized\\s+view|external\\s+table|model|function|procedure|column)\\b(?:\\s+(if(?:\\s+not)?\\s+exists)\\b)?)(?:\\s+(`?)((?:(?:[\\w\\-]*(?:\\{+\\s*[\\w\\-]+\\s*\\}+[\\w\\-]*)?)(?:\\.|(\\:)))?(?:(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?)\\.)?(?:[\\w\\{\\}]+|\\{\\{\\s*[\\w]+\\s*\\}\\}))\\4)?",
+      "match": "(?i:^\\s*(create(?:\\s+or\\s+replace)?(?:\\s+temporary|\\s+temp)?|drop|alter)\\s+(schema|table(?:\\s+function)?|view|materialized\\s+view|(?:external|snapshot)\\s+table|model|function|procedure|column)\\b(?:\\s+(if(?:\\s+not)?\\s+exists)\\b)?)(?:\\s+(`?)((?:(?:[\\w\\-]*(?:\\{+\\s*[\\w\\-]+\\s*\\}+[\\w\\-]*)?)(?:\\.|(\\:)))?(?:(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?)\\.)?(?:[\\w\\{\\}]+|\\{\\{\\s*[\\w]+\\s*\\}\\}))\\4)?",
       "name": "meta.create.sql"
     },
     {
@@ -83,7 +83,7 @@
           "name": "variable.parameter.table.partition_decorator.legacy.sql"
         }
       },
-      "match": "(?i)(from|join|delete\\s+from|delete(?!\\s+from)|update|using(?!\\s+message))\\s+((`?)((?:(?:[\\w\\-]*(?:\\{+\\s*[\\w\\-]+\\s*\\}+[\\w\\-]*)?)(?:\\.|(\\:)))?(?:(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?)\\.)?(?:INFORMATION_SCHEMA\\.\\w+|\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?))(\\*|\\$\\w+)?\\3?|\\[((?:(?:[\\w\\-]*(?:\\{+\\s*[\\w\\-]+\\s*\\}+[\\w\\-]*)?)(?:\\:|(\\.)))?(?:(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?)\\.)?(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?))(\\*|\\$\\w+)?\\])",
+      "match": "(?i)(from|join|delete\\s+from|delete(?!\\s+from)|update|using(?!\\s+message)|clone|on\\s+(?:schema|table|view))\\s+((`?)((?:(?:[\\w\\-]*(?:\\{+\\s*[\\w\\-]+\\s*\\}+[\\w\\-]*)?)(?:\\.|(\\:)))?(?:(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?)\\.)?(?:INFORMATION_SCHEMA\\.\\w+|\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?))(\\*|\\$\\w+)?\\3?|\\[((?:(?:[\\w\\-]*(?:\\{+\\s*[\\w\\-]+\\s*\\}+[\\w\\-]*)?)(?:\\:|(\\.)))?(?:(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?)\\.)?(?:\\w*(?:\\{+\\s*[\\w\\-]+\\s*\\}+\\w*)?))(\\*|\\$\\w+)?\\])",
       "name": "meta.create.from.sql"
     },
     {
@@ -138,7 +138,7 @@
       "name": "meta.create.DML.merge.sql"
     },
     {
-      "match": "(?i)\\b(array|boolean|bytes|date(?!\\s*\\()|datetime(?!\\s*\\()|geography|numeric|decimal|bignumeric|bigdecimal|float|float64|int64|integer|bool|record|string(?!\\s*\\()|struct|time(?!\\s*\\(|\\s+as\\s+of|\\s+zone)|timestamp(?!\\s*\\())\\b",
+      "match": "(?i)\\b(array|boolean|bytes|date(?!\\s*\\()|datetime(?!\\s*\\()|geography|numeric|decimal|bignumeric|bigdecimal|float|float64|int64|int|smallint|integer|bigint|tinyint|byteint|bool|record|any\\s+type|string(?!\\s*\\()|struct|time(?!\\s*\\(|\\s+as\\s+of|\\s+zone)|timestamp(?!\\s*\\())\\b",
       "name": "storage.type.sql"
     },
     {
@@ -202,8 +202,12 @@
       "name": "keyword.other.DML.sql"
     },
     {
-      "match": "(?i:\\b(create(\\s+(temporary|temp))?|drop(\\s+column)?|schema|table|view|materialized(\\s+view)?|external\\s+table|if|not|exists|partition|cluster|options|rows|range|unbounded|preceding|following|current|row|returns|language|deterministic|(\\s*or\\s+replace\\s+)?(function|procedure|model)(\\s*if\\s+not\\s+exists\\s+)?|(add|drop)\\s+column|cascade|restrict|rename|to)\\b)",
+      "match": "(?i:\\b(create(\\s+(temporary|temp))?|drop(\\s+column)?|schema|table(?:\\s+function)?|view|materialized(\\s+view)?|external\\s+table|snapshot|clone|if|not|exists|partition|cluster|options|data\\s+type|rows|range|unbounded|preceding|following|current|row|returns|language|deterministic|(\\s*or\\s+replace\\s+)?(function|procedure|model)(\\s*if\\s+not\\s+exists\\s+)?|(add|drop)\\s+column|cascade|restrict|rename|to)\\b)",
       "name": "keyword.other.DDL.sql"
+    },
+    {
+      "match": "(?i:\\b(grant|revoke)\\b)",
+      "name": "keyword.other.DCL.sql"
     },
     {
       "match": "(?i:\\b(merge|matched|default|truncate)\\b)",
@@ -551,8 +555,12 @@
     "functions": {
       "patterns": [
         {
-          "match": "(?i)\\b(CURRENT_(DATE|DATETIME|TIME(STAMP)?|USER)|(SESSION|SYSTEM)_USER|EXTRACT|UNNEST|(SAFE_)?CAST)\\b",
+          "match": "(?i)\\b(CURRENT_(DATE|DATETIME|TIME(STAMP)?|USER)|(SESSION|SYSTEM)_USER|EXTRACT|UNNEST)\\b",
           "name": "support.function.scalar.sql"
+        },
+        {
+          "match": "(?i)\\b((SAFE_)?CAST|PARSE_(BIGNUMERIC|NUMERIC))\\b",
+          "name": "support.function.cast.sql"
         },
         {
           "match": "(?i)\\b(DATE|DATETIME|TIME(STAMP)?|STRING|(DATE|DATETIME|TIME(STAMP)?)_(ADD|SUB|DIFF|TRUNC)|DATE_FROM_UNIX_DATE|(FORMAT|PARSE)_(DATE|DATETIME|TIME(STAMP)?)|UNIX_(DATE|SECONDS|MILLIS|MICROS)|TIMESTAMP_(SECONDS|MILLIS|MICROS)|LAST_DAY)(?=\\s*\\()",
@@ -615,7 +623,7 @@
           "name": "support.function.ml.sql"
         },
         {
-          "match": "(?i)\\b(ST_(AREA|ASBINARY|ASGEOJSON|ASTEXT|BOUNDARY|CENTROID|CENTROID_AGG|CLOSESTPOINT|CLUSTERDBSCAN|CONTAINS|CONVEXHULL|COVEREDBY|COVERS|DIFFERENCE|DIMENSION|DISJOINT|DISTANCE|DUMP|DWITHIN|ENDPOINT|EQUALS|GEOGFROMGEOJSON|GEOGFROMTEXT|GEOGFROMWKB|GEOGPOINT|GEOGPOINTFROMGEOHASH|GEOHASH|INTERSECTION|INTERSECTS|INTERSECTSBOX|ISCOLLECTION|ISEMPTY|LENGTH|MAKELINE|MAKEPOLYGON|MAKEPOLYGONORIENTED|MAXDISTANCE|NPOINTS|NUMPOINTS|PERIMETER|POINTN|SIMPLIFY|SNAPTOGRID|STARTPOINT|TOUCHES|UNION|UNION_AGG|WITHIN|X|Y))\\b",
+          "match": "(?i)\\b(ST_(AREA|ASBINARY|ASGEOJSON|ASTEXT|BOUNDARY|CENTROID|CENTROID_AGG|CLOSESTPOINT|CLUSTERDBSCAN|CONTAINS|CONVEXHULL|COVEREDBY|COVERS|DIFFERENCE|DIMENSION|DISJOINT|DISTANCE|DUMP|DWITHIN|ENDPOINT|EQUALS|GEOGFROM|GEOGFROMGEOJSON|GEOGFROMTEXT|GEOGFROMWKB|GEOGPOINT|GEOGPOINTFROMGEOHASH|GEOHASH|INTERSECTION|INTERSECTS|INTERSECTSBOX|ISCOLLECTION|ISEMPTY|LENGTH|MAKELINE|MAKEPOLYGON|MAKEPOLYGONORIENTED|MAXDISTANCE|NPOINTS|NUMPOINTS|PERIMETER|POINTN|SIMPLIFY|SNAPTOGRID|STARTPOINT|TOUCHES|UNION|UNION_AGG|WITHIN|X|Y))\\b",
           "name": "support.function.gis.sql"
         },
         {
