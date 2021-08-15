@@ -5,6 +5,50 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.9.0] - 2021-08-16
+### Added
+- Added supports **parameterized types**.
+  - `STRING(L)`
+  - `BYTES(L)`
+  - `NUMERIC(P)` / `NUMERIC(P, S)`
+  - `BIGNUMERIC(P)` / `BIGNUMERIC(P, S)`
+- Added supports new **data types**.
+  - `INTERVAL`
+- Added supports **Numeric type INT64 aliases**.
+  - `SMALLINT`
+  - `INTEGER`
+  - `BIGINT`
+  - `TINYINT`
+  - `BYTEINT`
+- Added all **data types** snippets.
+- Added supports **table snapshot**
+  - `CREATE SNAPSHOT TABLE` DDL statements.
+  - `INFORMATION_SCHEMA.TABLE_SNAPSHOTS` table.
+- Added supports **Table functions (TVF)** DDL statements.
+  - `CREATE TABLE FUNCTION`
+  - `DROP TABLE FUNCTION`
+- Added supports new `ALTER COLUMN` DDL statements.
+  - `ALTER COLUMN SET OPTIONS`
+  - `ALTER COLUMN SET DATA TYPE`
+- Added supports new **casting** functions.
+  - `PARSE_BIGNUMERIC()`
+  - `PARSE_NUMERIC()`
+  - Added `FORMAT` parameter to `CAST()` function
+- Added supports new **casting** functions.
+  - `ST_GEOGFROM()`
+- Added supports **DCL** statements.
+  - `GRANT`
+  - `REVOKE`
+  - `INFORMATION_SCHEMA.OBJECT_PRIVILEGES`
+
+### Changed
+- Changed the use single line comment symbol from `#` to `--`.
+  - BigQuery UI reswitched comment symbol from `#` to `--`.
+
+### Fixed
+- Minor fixed.
+
+
 ## [1.8.0] - 2021-05-23
 ### Added
 - Added supports new **Geography** functions snippets.
@@ -44,7 +88,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
       ```
 
 ### Fixed
-- Miner fixed
+- Minor fixed.
 
 
 ## [1.6.1] - 2021-05-17
@@ -608,7 +652,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
       ```
 
 ### Fixed
-- Miner fixed
+- Minor fixed.
 
 
 ## [1.5.0] - 2021-05-09
@@ -1676,7 +1720,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed **regular expression syntax** with **quote character**
-- Miner fixed
+- Minor fixed.
 
 
 ## [1.4.0] - 2019-10-14
@@ -1987,7 +2031,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     |`KEYS.ROTATE_KEYSET`|`keysrotate_keyset`|`KEYS.ROTATE_KEYSET(keyset, key_type)`|
 
 ### Fixed
-- Miner fixed
+- Minor fixed.
 
 
 ## [1.1.0] - 2019-03-17
@@ -1995,6 +2039,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial release
 
 
+[1.9.0]: https://github.com/shinichi-takii/vscode-language-sql-bigquery/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/shinichi-takii/vscode-language-sql-bigquery/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/shinichi-takii/vscode-language-sql-bigquery/compare/v1.6.1...v1.7.0
 [1.6.1]: https://github.com/shinichi-takii/vscode-language-sql-bigquery/compare/v1.6.0...v1.6.1
